@@ -1,4 +1,4 @@
-export  class Lift {
+export interface Lift {
     ime?: string;
     n_k?: number;
     pod_zg?: string;

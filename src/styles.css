@@ -136,4 +136,12 @@ body .push-right{margin-right:10px;}
   .mySelectClass {
     padding-top: 12px;
   }
-  
+  .example-form-field {
+    width: 200px;
+  }
+  .excel-div{
+    padding-top: 20px;
+
+    position:absolute; 
+    right:0;
+  }

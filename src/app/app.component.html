@@ -17,8 +17,8 @@
   <mat-sidenav #sidenav [mode]="isBiggerScreen() ? 'over' : 'side'" 
     [fixedTopGap]>
     <mat-nav-list>
-      <a mat-list-item routerLinkActive="active" routerLink="/ispis-putovanja">
-        <mat-icon>add</mat-icon>Ispis putovanja
+      <a mat-list-item routerLinkActive="active" routerLink="/ispis-zgrada"  *ngIf="authService.isLoggedIn">
+        <mat-icon>list</mat-icon>Ispis zgrada
       </a>
       <a mat-list-item routerLinkActive="active" routerLink="/sign-in" *ngIf="!authService.isLoggedIn">
         <mat-icon>login</mat-icon>Login

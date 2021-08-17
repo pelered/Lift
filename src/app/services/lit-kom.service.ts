@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
-import Lift from '../models/lift.model';
+import {Lift} from 'src/app/models/lift.model';
 @Injectable({
   providedIn: 'root'
 })

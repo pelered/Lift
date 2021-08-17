@@ -8,7 +8,9 @@ import { AngularFireModule }  from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from '../environments/environment';
 import { RouterModule } from '@angular/router';
-import Lift from './models/lift.model';
+import {Lift} from 'src/app/models/lift.model';
+
+//import Lift from './models/lift.model';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AngularMaterialModule } from './material.module';
@@ -24,6 +26,8 @@ import { AuthService } from "./services/auth.service";
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { IspisZgradaComponent } from './components/ispis-zgrada/ispis-zgrada.component';
 import { IspisLiftovaComponent } from './components/ispis-liftova/ispis-liftova.component';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableExporterModule } from 'mat-table-exporter';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +50,9 @@ import { IspisLiftovaComponent } from './components/ispis-liftova/ispis-liftova.
     AngularMaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatSortModule,
+    MatTableExporterModule
   ],
   providers: [Lift,AuthService],
   bootstrap: [AppComponent],

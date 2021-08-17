@@ -12,7 +12,7 @@ import { IspisLiftovaComponent } from './components/ispis-liftova/ispis-liftova.
 
 const routes: Routes = [
 {path: '', pathMatch: 'full', redirectTo: 'ispis-zgrada'},
-{path: 'ispis-putovanja', component: IspisPutovanjaComponent },
+{path: 'ispis-putovanja/:id', component: IspisPutovanjaComponent },
 {path: 'sign-in',component: SignInComponent},
 {path: 'sign-up',component:SignUpComponent},
 {path: 'verify-email',component:VerifyEmailComponent},
