@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Zgrada } from 'src/app/models/zgrada/zgrada.model';
-import { AngularFireDatabase, AngularFireList,AngularFireAction ,AngularFireObject,QueryFn } from '@angular/fire/database';
-import { User } from 'src/app/models/user';
-import { Observable, Subscription, BehaviorSubject, Subject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import firebase from 'firebase';
+import { Zgrada } from 'src/app/models/zgrada/zgrada';
+//import { Zgrada } from 'src/app/models/zgrada/zgrada.model';
+import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
+
 
 
 @Injectable({

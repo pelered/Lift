@@ -1,18 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ZgradaService } from 'src/app/services/zgrada/zgrada.service';
-import { Zgrada } from 'src/app/models/zgrada/zgrada.model';
+import { Zgrada } from 'src/app/models/zgrada/zgrada';
 import { MatPaginator} from '@angular/material/paginator';
 import {  MatTableDataSource } from '@angular/material/table';
 import { User } from 'src/app/models/user';
 
 import {FormControl, Validators} from '@angular/forms';
-import { AngularFireList } from '@angular/fire/database';
-import { BehaviorSubject, Observable , Subscription,} from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { AngularFireDatabase, AngularFireAction } from '@angular/fire/database';
-import { DataSnapshot } from '@angular/fire/database/interfaces';
-
 
 @Component({
   selector: 'app-ispis-zgrada',
@@ -95,12 +89,15 @@ export class IspisZgradaComponent implements OnInit {
         )
       )
     ).subscribe(data=>{
+      this.PodZgrada=[];
+      this.is_edit=[];
       
       data.forEach(items => {
         //todo izmjeniti da je query a ne da ih sve dohvati
         if(items.u_uid==this.userData.uid){    
           //console.log("Ispispodzgrada0:",this.PodZgrada);    
-          this.PodZgrada.push(items as Zgrada)
+          this.PodZgrada.push(items as Zgrada);
+          
           this.is_edit.push(false);
 
         }
@@ -120,6 +117,7 @@ export class IspisZgradaComponent implements OnInit {
       )
     ).subscribe(data => {
       //console.log("Ispis0.25:",data);
+      this.LiftData=[];
       data.forEach(item => {
         //todo izmjeniti da je query a ne da ih sve dohvati
         if(item.u_uid==this.userData.uid){        

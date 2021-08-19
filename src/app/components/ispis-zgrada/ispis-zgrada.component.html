@@ -89,10 +89,15 @@
                   te da se ne izbriši odmah iz baze nego nakon par dana ali mjerejrenj je pauzirano
                 [routerLink]="['/edit-book/', element.$key]"
               -->
-              <button mat-raised-button color="red" (click)=editZgrada(element.key,element.ime,i,is_selected[i]) class="push-right" [disabled]=" edit==true || is_selected[i]==undefined"  *ngIf="is_edit[i]==false">Edit</button>
+               
+              <button mat-raised-button color="red" (click)=editZgrada(element.key,element.ime,i,is_selected[i]) class="push-right"  [disabled]=" edit==true || is_selected[i]==undefined"  *ngIf="is_edit[i]==false && getSpecificPodZg(element.key).length">Edit</button>
+              <button mat-raised-button color="red" (click)=editZgrada(element.key,element.ime,i,is_selected[i]) class="push-right"  *ngIf="is_edit[i]==false &&  !getSpecificPodZg(element.key).length" >Edit</button>
+
               <button mat-raised-button color="red"  class="push-right" (click)=saveZgrada(element.key,element.ime,i,is_selected[i]) *ngIf="is_edit[i]==true">Save</button>
              
-                <button mat-raised-button color="red" (click)="removeZgrada()">Delete</button>
+                <button mat-raised-button color="red" *ngIf="getSpecificPodZg(element.key).length" [disabled]="is_selected[i]==undefined" (click)="removeZgrada()">Delete</button>
+                <button mat-raised-button color="red" *ngIf="!getSpecificPodZg(element.key).length" (click)="removeZgrada()">Delete</button>
+
 
               </td>
             </ng-container>

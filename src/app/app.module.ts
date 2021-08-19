@@ -7,17 +7,15 @@ import { AppComponent } from './app.component';
 import { AngularFireModule }  from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from '../environments/environment';
-import { RouterModule } from '@angular/router';
-import {Lift} from 'src/app/models/lift.model';
+import {Lift} from './models/lift.model';
 
-//import Lift from './models/lift.model';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AngularMaterialModule } from './material.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { IspisPutovanjaComponent } from './ispis-putovanja/ispis-putovanja.component';
+import { IspisVoznjiComponent } from './components/ispis-voznji/ispis-voznji.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
@@ -31,7 +29,7 @@ import { MatTableExporterModule } from 'mat-table-exporter';
 @NgModule({
   declarations: [
     AppComponent,
-    IspisPutovanjaComponent,
+    IspisVoznjiComponent,
     SignInComponent,
     SignUpComponent,
     ForgotPasswordComponent,

@@ -1,4 +1,4 @@
-import  Lift  from './lift.model';
+import  {Lift}  from './lift.model';
 
 describe('Lift', () => {
   it('should create an instance', () => {

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IspisPutovanjaComponent } from './ispis-putovanja.component';
+import { IspisVoznjiComponent } from './ispis-voznji.component';
 
 describe('IspisPutovanjaComponent', () => {
-  let component: IspisPutovanjaComponent;
-  let fixture: ComponentFixture<IspisPutovanjaComponent>;
+  let component: IspisVoznjiComponent;
+  let fixture: ComponentFixture<IspisVoznjiComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ IspisPutovanjaComponent ]
+      declarations: [ IspisVoznjiComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IspisPutovanjaComponent);
+    fixture = TestBed.createComponent(IspisVoznjiComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

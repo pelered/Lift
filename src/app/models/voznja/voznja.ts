@@ -1,4 +1,4 @@
-export interface Putovanje {
+export interface Voznja {
     count_p?: number;
     end_time?: string ;
     n_k?: number;

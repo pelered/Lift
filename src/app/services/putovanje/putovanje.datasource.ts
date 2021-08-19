@@ -1,6 +1,5 @@
 import { MatTableDataSource } from "@angular/material/table";
 import { Observable, Subscription } from "rxjs";
-import { Putovanje as any } from "src/app/models/putovanje/putovanje";
 
 export class PutovanjeDataSource extends MatTableDataSource<any> {
   private transactions: any[] = [];

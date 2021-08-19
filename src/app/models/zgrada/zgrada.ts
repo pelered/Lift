@@ -1,4 +1,4 @@
-export class Zgrada {
+export interface Zgrada {
     ime ?:string;
     u_uid ?:string;
     lifts?:Array<String>;

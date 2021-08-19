@@ -6,12 +6,6 @@ import { map } from 'rxjs/operators';
 import { MatPaginator} from '@angular/material/paginator';
 import {  MatTableDataSource } from '@angular/material/table';
 import { User } from 'src/app/models/user';
-import { AngularFireList } from '@angular/fire/database';
-import { BehaviorSubject, Observable , Subscription,} from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { AngularFireDatabase, AngularFireAction } from '@angular/fire/database';
-import { DataSnapshot } from '@angular/fire/database/interfaces';
-//import {Lift} from 'src/app/models/lift.model';
 import { Lift } from 'src/app/models/lift/lift';
 
 @Component({
