@@ -54,8 +54,11 @@ export class ZgradaService {
     return this.zgradaRef.push(zgrada);
   }
 
-  update(key: string, value: any): Promise<void> {
-    return this.zgradaRef.update(key, value);
+  updateZg(key:string, value: string): Promise<void> {
+    return this.zgradaRef.update(key, {ime:value});
+  }
+  updatePodzg(key: string, value: any): Promise<void> {
+    return this.podzgradaRef.update(key, {ime:value});
   }
 
   delete(key: string): Promise<void> {

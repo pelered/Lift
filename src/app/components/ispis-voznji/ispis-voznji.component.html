@@ -1,7 +1,28 @@
 <div class="title-group" >
     <h1 class="mat-h1" >Popis vožnji</h1>
   </div>
-
+  <div >
+    <button mat-stroked-button *ngIf="zgrada!=undefined">
+      <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+        business
+        </span></mat-icon> {{zgrada.ime}} </button>
+       
+        
+        
+          
+          
+        <button mat-stroked-button *ngIf="podzg!=undefined">
+          <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+            business
+            </span></mat-icon> {{podzg.ime}} </button>
+           
+              
+              
+        <button mat-stroked-button *ngIf="lift!=undefined">          
+          <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+            elevator
+            </span></mat-icon>  {{lift.ime}}</button>
+  </div>
   <div >
     <mat-divider fxFlex="1 0"></mat-divider>
 
@@ -9,7 +30,7 @@
   <div>
   <mat-form-field appearance="standard">
     <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Lift0" #input>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Lift" #input>
   </mat-form-field>
   </div>
   <div  >
@@ -21,9 +42,7 @@
           [matDatepicker]="fromDate" 
           placeholder="From Date" 
           formControlName="fromDate">
-          <button *ngIf="fromDate" matSuffix mat-icon-button aria-label="Clear" (click)="clearFromDate()">
-            <mat-icon matDatepickerToggleIcon >close</mat-icon>
-          </button>
+          
         <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
         <mat-datepicker #fromDate></mat-datepicker>
       </mat-form-field>
@@ -34,19 +53,20 @@
           [matDatepicker]="toDate" 
           placeholder="To Date" 
           formControlName="toDate">
-          <button *ngIf="toDate" matSuffix mat-icon-button aria-label="Clear" (click)="clearToDate()">
-            <mat-icon matDatepickerToggleIcon >close</mat-icon>
-          </button>
+         
         <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
         <mat-datepicker #toDate></mat-datepicker>
 
       </mat-form-field>
+      <button  matSuffix mat-icon-button aria-label="Clear" (click)="clearFromDate()">
+        <mat-icon matDatepickerToggleIcon >close</mat-icon>
+      </button>
      <button mat-button color="primary" (click)="applyFilterDate()">Pretraži</button>
   </form>
   </div>
   
  
-  <div class="container" [hidden]="!(LiftData.length > 0)"  >
+  <div class="container" [hidden]="!(TravelData.length > 0)"  >
     <div style="float:right;">
       <button mat-raised-button (click)="exporter.exportTable('xlsx', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
       <button mat-raised-button (click)="exporter.exportTable('csv')">Csv</button>
@@ -111,6 +131,6 @@
     </tr>
           </table>
       
-          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20,100]" showFirstLastButtons></mat-paginator>
         </div>
   </div>

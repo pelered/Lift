@@ -42,7 +42,7 @@ export class LiftService {
   }
 
   update(key: string, value: any): Promise<void> {
-    return this.liftRef.update(key, value);
+    return this.liftRef.update(key, {ime:value});
   }
 
   delete(key: string): Promise<void> {

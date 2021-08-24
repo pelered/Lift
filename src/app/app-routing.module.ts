@@ -19,7 +19,7 @@ const routes: Routes = [
 {path: 'forgot-password',component:ForgotPasswordComponent},
 {path:'ispis-zgrada',component:IspisZgradaComponent, canActivate: [AuthGuard]},
 {path: 'dashboard',component:DashboardComponent, canActivate: [AuthGuard]},
-{path: 'ispis-liftova/:id',component:IspisLiftovaComponent,canActivate:[AuthGuard]}
+{path: 'ispis-liftova/:id',component:IspisLiftovaComponent,canActivate:[AuthGuard]},
 
 ];
 

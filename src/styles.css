@@ -136,9 +136,7 @@ body .push-right{margin-right:10px;}
   .mySelectClass {
     padding-top: 12px;
   }
-  .example-form-field {
-    width: 200px;
-  }
+
   .excel-div{
     padding-top: 20px;
 
@@ -146,7 +144,9 @@ body .push-right{margin-right:10px;}
     right:0;
   }
   .example-form-field {
-    margin: 0 8px 16px 0;
+
+    padding-top: 15px;    
+    margin: 0 0px 0px 0;
   }
   .mat-datepicker-input {
     width: 85%;

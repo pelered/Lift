@@ -1,0 +1,14 @@
+.header-align-right{
+    display: flex;
+    padding: 35px 0;
+    justify-content: flex-end;
+  }
+  .content-align-right{
+    display: flex;
+    padding: 10px 0;
+    justify-content: flex-end;
+  }
+  .mat-icon-padding{
+    padding-right: 15px;
+    align-self: flex-start;
+  }
