@@ -1,11 +1,13 @@
+import { DatePipe } from "@angular/common";
+
 export interface Voznja {
     count_p?: number;
-    end_time?: string ;
+    end_time?:Date;
     n_k?: number;
     odb_pod_zgrada?: string;
     odb_zgrada?: string;
     p_k?: number;
-    start_time?: string;
+    start_time?: Date;
     v_k?: number;
     z_k?: number;
     id_lift?: string;

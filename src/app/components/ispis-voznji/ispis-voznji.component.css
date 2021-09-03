@@ -2,4 +2,11 @@
     width: 200px;
     padding-right: 20px;
   }
-  
+  .topcorner{
+    position:absolute;
+    top:10px;
+    right:10px;
+   }
+   .div-buttons{
+     padding-top: 20px;
+   }

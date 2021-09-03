@@ -21,7 +21,6 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { AuthService } from "./services/auth.service";
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { IspisZgradaComponent } from './components/ispis-zgrada/ispis-zgrada.component';
 import { IspisLiftovaComponent } from './components/ispis-liftova/ispis-liftova.component';
 import { MatSortModule } from '@angular/material/sort';
@@ -34,7 +33,6 @@ import { MatTableExporterModule } from 'mat-table-exporter';
     SignUpComponent,
     ForgotPasswordComponent,
     VerifyEmailComponent,
-    DashboardComponent,
     IspisZgradaComponent,
     IspisLiftovaComponent,
 

@@ -42,8 +42,7 @@ export class AuthService {
     return this.afAuth.signInWithEmailAndPassword(email, password)
       .then((result:any) => {
         this.ngZone.run(() => {
-          console.log("Ispis1",result);
-          this.router.navigate(['dashboard']);
+          this.router.navigate(['ispis-zgrada']);
         });
         this.SetUserData(result.user);
       }).catch((error:any) => {
@@ -91,18 +90,13 @@ export class AuthService {
 
     return (user !== null && user.emailVerified !== false) ? true : false;
   }
-/*
-  // Sign in with Google
-  GoogleAuth() {
-    return this.AuthLogin(new GoogleAuthProvider());
-  }
-*/
+
   // Auth logic to run auth providers
   AuthLogin(provider:any) {
     return this.afAuth.signInWithPopup(provider)
     .then((result:any) => {
        this.ngZone.run(() => {
-          this.router.navigate(['dashboard']);
+          this.router.navigate(['ispis-zgrada']);
         })
       this.SetUserData(result.user);
     }).catch((error:any) => {
@@ -115,7 +109,6 @@ export class AuthService {
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
   //todo: provjera da ako postoji vec ne sprema se
   SetUserData(user:any) {
-    //const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     
     const userData: User = {
       uid: user.uid,
@@ -124,9 +117,6 @@ export class AuthService {
       photoURL: user.photoURL,
       emailVerified: user.emailVerified
     }
-    //this.db.list(this.dbPath).set(userData.uid,userData);
-    //this.liftsRef.set("key",userData);
-    //console.log("Logged1:",this.db.list(this.dbPath+'/'+user.uid).set("key",userData));
 
 
     return this.db.list(this.dbPath).set(userData.uid,userData);
@@ -135,9 +125,9 @@ export class AuthService {
   // Sign out 
   SignOut() {
     return this.afAuth.signOut().then(() => {
-      console.log("Ispis3",localStorage.getItem('user'));
 
       localStorage.removeItem('user');
+      localStorage.clear;
       this.router.navigate(['sign-in']);
     })
   }

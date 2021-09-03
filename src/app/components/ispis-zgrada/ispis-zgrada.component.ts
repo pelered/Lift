@@ -8,15 +8,18 @@ import { User } from 'src/app/models/user';
 
 import {AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
+import { LiftService } from 'src/app/services/lift/lift.service';
+import { PutovanjeService } from 'src/app/services/putovanje/putovanje.service';
 
 //
-interface Food {
-  value: string;
-  viewValue: string;
-}
-//
-//                [routerLink]="['/ispis-liftova/',element.key]" [state]="{ data: {element}}"
-
+import { Injectable } from '@angular/core';
+//import { Zgrada } from 'src/app/models/zgrada/zgrada.model';
+import { AngularFireAction, AngularFireDatabase, AngularFireList } from '@angular/fire/database';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import firebase from 'firebase';
+import { Subscription, timer } from 'rxjs';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 @Component({
   selector: 'app-ispis-zgrada',
   templateUrl: './ispis-zgrada.component.html',
@@ -24,13 +27,9 @@ interface Food {
 })
 export class IspisZgradaComponent implements OnInit {
 
-  //selectedValue: string | undefined;
 
-  isti_naziv!:boolean;
   zgrade?:Zgrada[];
-  //currentZgrada?:Zgrada;
- // currentIndex = -1;
-  //title = '';
+
   dataSource!: MatTableDataSource<Zgrada>;
   paginator!: MatPaginator;
   @ViewChild(MatPaginator)
@@ -39,6 +38,8 @@ export class IspisZgradaComponent implements OnInit {
   PodZgrada: any=[];
   userData!:  User;
   SpecificPodZg :any=[];
+  listLifts:any=[];
+  listVoznji:any=[];
   
   privremeni!: Zgrada;
   value = 'Clear me';
@@ -48,6 +49,22 @@ export class IspisZgradaComponent implements OnInit {
   is_save :boolean[]=[];
   is_selected:string[]=[];
   is_selected_ob:string[]=[];
+
+  size$: BehaviorSubject<string|null>;
+  travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
+  isti_naziv!:boolean;
+
+  broj!:number;
+
+  zgrada_cijela!:any;
+  list_lifts!:[];
+  podzglist_lifts!:[];
+  zglist_lifts!:[];
+  podzg!:string;
+  zg_list_podzg!:[];
+  zg!:string;
+  subscription!: Subscription;
+
   zgradaFormControl = new FormControl('', [
     Validators.required,
     Validators.nullValidator,
@@ -68,11 +85,13 @@ export class IspisZgradaComponent implements OnInit {
 
   
   constructor(private zgrada_service: ZgradaService
-   ) { 
+   ,private lift_service:LiftService,private voznja_service:PutovanjeService) { 
     this.is_edit=[];
     this.is_save=[];
     this.is_selected=[];
     this.edit=false;
+    this.size$ = new BehaviorSubject<string|null>(null);   
+    this.isti_naziv=false;
 
     }
 
@@ -82,11 +101,6 @@ export class IspisZgradaComponent implements OnInit {
     this.retrieveZgrade();
     
   }
- /* refreshList(): void {
-    //this.currentZgrada = undefined;
-    //this.currentIndex = -1;
-    this.retrieveZgrade();
-  }*/
 
   retrieveZgrade(): void {
     
@@ -108,14 +122,10 @@ export class IspisZgradaComponent implements OnInit {
       this.is_edit=[];
       
       data.forEach(items => {
-        //todo izmjeniti da je query a ne da ih sve dohvati
-        console.log("User",this.userData);
+        
         if(items.u_uid==this.userData.uid){    
           this.PodZgrada.push(items as Zgrada);          
-          this.is_edit.push(false);       
-
-
-
+          this.is_edit.push(false);     
         }
       })
 
@@ -134,7 +144,7 @@ export class IspisZgradaComponent implements OnInit {
       this.LiftData=[];
       this.is_selected=[];
       this.is_save=[];
-      console.log("Zgrade:",data);
+      //console.log("Zgrade:",data);
 
       data.forEach(item => {
         //todo izmjeniti da je query a ne da ih sve dohvati
@@ -167,16 +177,13 @@ export class IspisZgradaComponent implements OnInit {
 
   }
 
-  setActiveZgrada(zgrada: Zgrada, index: number): void {
-    //this.currentZgrada = zgrada;
-    //this.currentIndex = index;
-  }
+
   getPodzg(pod_id:String){
      
     this.PodZgrada.forEach((element: any) => {
       if(element.key==pod_id){
       //this.SpecificPodZg.push(element);
-      console.log("Podzgrada:",element);
+      //console.log("Podzgrada:",element);
       this.is_selected_ob.push(element);
       this.privremeni=element;
 
@@ -219,66 +226,149 @@ export class IspisZgradaComponent implements OnInit {
     
 
   }
+  check(ime:any,podzg:any):void{
+    let list=[];
+    for(let k of podzg){
+      list.push(k.key)
+    }
+    for(let a of this.PodZgrada) {
+      if(list.includes(a.key) && a.ime==ime) {
+        this.isti_naziv=true;
+        break;
+      }else{
+        this.isti_naziv=false;
+      }
+   } 
+    
+  }
   saveZgrada(zgrada_key:string,naziv:string,i:number,pod:string):void{
     this.is_edit[i]=false;
     this.is_save[i]=false;
     this.edit=false;
-    this.LiftData.forEach((element: any) => {
-      if(this.value==element.ime){
-        console.log("Postoji zg s tim nazivom",this.value);
-        this.isti_naziv=true;
-      }else if(element.key==zgrada_key){
-        if(this.value==element.ime){
-          console.log("Nisi promjenio naziv zg",this.value);
-        }
-      }else if(this.value!=""){
-        this.zgrada_service.updateZg(zgrada_key,this.value);
-      }
+    this.zgrada_service.updateZg(zgrada_key,this.value);
+    this.zgrada_service.updatePodzg(pod,this.value2);
 
+
+  }
+  
+  removeZgrada_Pod(key_zg:string,key_podzg:string):void{
+    console.log("Delete:",key_podzg,key_zg);
+    this.PodZgrada.forEach((element:any) => {
+      if(element.key==key_podzg){
+        console.log("Podzgprije",element);
+        element.lifts.forEach((l:string)=>{
+          this.listLifts.push(l);
+        })
+      }      
+    });
+    this.LiftData.forEach((element:any) => {
+      if(element.key==key_zg){
+        console.log("Zgradaprije",element)
+        const index = element.podzg.indexOf(key_podzg, 0);
+        if (index > -1) {
+          element.podzg.splice(index, 1);
+        }      
+        console.log("Provjera",this.listLifts);
+        if(this.listLifts!=null && this.listLifts!=undefined){
+          this.listLifts.forEach((lift:string) => {
+            const index1 = element.lifts.indexOf(lift, 0);
+            if (index1 > -1) {
+              element.lifts.splice(index1, 1);
+            }  
+          });   
+        }
+
+               
       
-    });
-    this.PodZgrada.forEach((element: any) => {
-      if(element.zg_id==zgrada_key){
-        if(element.ime==this.value2){
-          console.log("SavePod",element.ime,this.value2)
-        }
-        else if(this.value2!=""){
-          this.zgrada_service.updatePodzg(pod,this.value2);
-        }
+        this.zgrada_cijela=element;
 
+        //this.zglist_lifts=element.lifts;
+        
+
+      }      
+    });
+    this.zg=key_zg;
+    console.log("Zgrada",this.zgrada_cijela);
+
+    this.podzg=key_podzg;
+    console.log("Delete:",key_zg);
+    console.log("Listaliftovazaizbacit:",this.listLifts);
+    console.log("Novalistaliftovazgrade:",this.zglist_lifts);
+    console.log("Novalistapodzg:",this.zg_list_podzg);
+
+    this.broj=0;
+    this.startTimer();
+  }
+  startTimer(){
+    const source = timer(0, 1000);
+    if(this.broj<this.listLifts.length){
+      this.travels$=this.voznja_service.getListPutovanjaQuery(this.listLifts[this.broj]);
+      this.travels$.forEach((data) =>{
+        data.forEach((ele)=> { 
+          this.listVoznji.push(ele.payload.key);
+       })  
+      }); 
+      this.subscription = source.subscribe(val => {
+         // do stuff you want when the interval ticks
+         if(val==2){
+           this.stopTimer();
+           this.broj++;
+           this.startTimer();
+         }
+      });
+    }else if(this.broj==this.listLifts.length){
+      this.listVoznji.forEach((element: string) => {
+        this.voznja_service.delete(element);        
+      });
+      this.listLifts.forEach((element: string) => {
+        this.lift_service.delete(element);        
+      });
+      if(this.podzg!=null){
+        this.zgrada_service.update(this.zg,this.zgrada_cijela);
+        this.zgrada_service.deletePod(this.podzg);        
+      }else if(this.podzg==null){
+        this.zgrada_service.delete(this.zg);
       }
+      console.log("Voznje",this.listVoznji);
+    }else if(this.listLifts.length==undefined){
+      this.zgrada_service.update(this.zg,this.zgrada_cijela);
+      this.zgrada_service.deletePod(this.podzg);        
+
+    }
+    
+  }
+
+  stopTimer(){
+    this.subscription.unsubscribe();
+  }
 
 
+ 
+  removeZgrada(key_zg:string):void{
+    this.LiftData.forEach((element:any) => {
+      if(element.key==key_zg){
+        this.listLifts=element.lifts; 
+        this.listLifts.forEach((lift:string)=>{
+          const index1 = element.lifts.indexOf(lift, 0);
+          if (index1 > -1) {
+            element.lifts.splice(index1, 1);
+          }   
+
+        })
+        this.zglist_lifts=element.lifts;    
+        this.zgrada_cijela=element;  
+      }      
     });
-    //console.log("Save:",zgrada_key,naziv,i,pod);
+    console.log("Delete:",key_zg);
+    console.log("Del0:",this.listLifts.length);
+    this.zg=key_zg;
+
+    this.broj=0;
+    this.startTimer();   
+
 
   }
-  check_name(){
-    console.log("Check:",this.value);
 
-    this.LiftData.forEach((element: any) => {
-      if(this.value==element.ime){
-        console.log("Check:2",this.value,element.ime);
-
-        return true;
-      }
-      console.log("Check:3");
-
-      return false;
-    });
-    console.log("Check:4");
-
-    return false;
-  }
-
-  removeZgrada():void{
-
-  }
-  /*removeAllZgrade(): void {
-    this.zgrada_service.deleteAll()
-      .then(() => this.refreshList())
-      .catch(err => console.log(err));
-  }*/
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
