@@ -155,19 +155,20 @@ export class IspisZgradaComponent implements OnInit {
           
         }
       })
+      console.log("Selected",this.LiftData);
       this.LiftData.forEach((el:any) => {
+        
         if(el.podzg!=undefined){
           //nece raditi ako nisu zaredom s selectom
           this.is_selected.push(el.podzg[0]);
-
-
         }else{
           this.is_selected.push("");
         }
       });
       this.zgrade = data;
 
-     
+     console.log("Zgrada:",this.LiftData);
+     console.log("Podzgrada:",this.PodZgrada);
         this.dataSource = new MatTableDataSource(this.LiftData);
         //console.log("Datas",this.dataSource);
         setTimeout(() => {
@@ -183,7 +184,7 @@ export class IspisZgradaComponent implements OnInit {
     this.PodZgrada.forEach((element: any) => {
       if(element.key==pod_id){
       //this.SpecificPodZg.push(element);
-      //console.log("Podzgrada:",element);
+      //console.log("Podzgrada-selected:",element);
       this.is_selected_ob.push(element);
       this.privremeni=element;
 
@@ -204,6 +205,8 @@ export class IspisZgradaComponent implements OnInit {
       }
 
     });
+    //console.log("Podzg2",this.SpecificPodZg);
+
     return this.SpecificPodZg;
   }
 
@@ -253,24 +256,39 @@ export class IspisZgradaComponent implements OnInit {
   
   removeZgrada_Pod(key_zg:string,key_podzg:string):void{
     console.log("Delete:",key_podzg,key_zg);
+    //pregledavamo listu svih podzgrada
     this.PodZgrada.forEach((element:any) => {
       if(element.key==key_podzg){
+        console.log("Kljucevi1",element.key,key_podzg);
+        //ako je podzgrada u listi istog kljuca kao zadana
         console.log("Podzgprije",element);
-        element.lifts.forEach((l:string)=>{
-          this.listLifts.push(l);
-        })
+        if(element.lifts!=undefined){
+          //ako postoji lista liftova u toj podzgradi
+          element.lifts.forEach((l:string)=>{
+            //spremamo sve liftove u novu list u za brisanje
+            this.listLifts.push(l);
+          })
+        }
+        
       }      
     });
     this.LiftData.forEach((element:any) => {
+      //lista svi zgrada
       if(element.key==key_zg){
-        console.log("Zgradaprije",element)
+        console.log("Kljucevi2",element.key,key_zg);
+        //zgrada istog kljuca kao zadana
+        console.log("Zgradaprije",element.podzg,key_podzg)
+        //trebalo bi izbacit podzgradu s idem podzgrade koja se brise
         const index = element.podzg.indexOf(key_podzg, 0);
+        console.log("Zgradaprije2",index)
         if (index > -1) {
           element.podzg.splice(index, 1);
         }      
-        console.log("Provjera",this.listLifts);
+        console.log("Provjeraliftovizabrisanje:",this.listLifts);
         if(this.listLifts!=null && this.listLifts!=undefined){
+          //ako postoje liftovi za brisanje
           this.listLifts.forEach((lift:string) => {
+            //idemo po listi i izbacujemo liftove koji bi trebali biti obrisani
             const index1 = element.lifts.indexOf(lift, 0);
             if (index1 > -1) {
               element.lifts.splice(index1, 1);
@@ -318,21 +336,23 @@ export class IspisZgradaComponent implements OnInit {
       });
     }else if(this.broj==this.listLifts.length){
       this.listVoznji.forEach((element: string) => {
-        this.voznja_service.delete(element);        
+        //this.voznja_service.delete(element);        
       });
       this.listLifts.forEach((element: string) => {
-        this.lift_service.delete(element);        
+        //this.lift_service.delete(element);        
       });
-      if(this.podzg!=null){
-        this.zgrada_service.update(this.zg,this.zgrada_cijela);
-        this.zgrada_service.deletePod(this.podzg);        
+      if(this.podzg!=null ){
+        console.log("Tu1");
+        //this.zgrada_service.update(this.zg,this.zgrada_cijela);
+        //this.zgrada_service.deletePod(this.podzg);        
       }else if(this.podzg==null){
-        this.zgrada_service.delete(this.zg);
+        console.log("Tu2")
+        //this.zgrada_service.delete(this.zg);
       }
       console.log("Voznje",this.listVoznji);
     }else if(this.listLifts.length==undefined){
-      this.zgrada_service.update(this.zg,this.zgrada_cijela);
-      this.zgrada_service.deletePod(this.podzg);        
+      //this.zgrada_service.update(this.zg,this.zgrada_cijela);
+      //this.zgrada_service.deletePod(this.podzg);        
 
     }
     

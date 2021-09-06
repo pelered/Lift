@@ -1,4 +1,5 @@
 export interface Lift {
+    key?:string;
     ime?: string;
     is_connected?:boolean;
     n_k?: number;

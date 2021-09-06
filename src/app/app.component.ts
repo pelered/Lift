@@ -1,16 +1,20 @@
 import { Component , ViewChild, HostListener, OnInit  } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthService } from './services/auth.service';
-
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+export let browserRefresh = false;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(    public authService: AuthService) { }
-
-  title = 'my-first-project';
+  constructor(    public authService: AuthService,private router: Router) { 
+    
+  }
+  
+  title = 'Lift';
   opened = true;
   @ViewChild('sidenav')
   sidenav!: MatSidenav;

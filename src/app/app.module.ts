@@ -25,6 +25,7 @@ import { IspisZgradaComponent } from './components/ispis-zgrada/ispis-zgrada.com
 import { IspisLiftovaComponent } from './components/ispis-liftova/ispis-liftova.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableExporterModule } from 'mat-table-exporter';
+import { ChartsModule } from 'ng2-charts';
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +49,8 @@ import { MatTableExporterModule } from 'mat-table-exporter';
     ReactiveFormsModule,
     FlexLayoutModule,
     MatSortModule,
-    MatTableExporterModule
+    MatTableExporterModule,
+    ChartsModule
   ],
   providers: [Lift,AuthService],
   bootstrap: [AppComponent],

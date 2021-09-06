@@ -36,6 +36,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatNativeDateModule } from '@angular/material/core'; 
+import { MatTabsModule } from '@angular/material/tabs'; 
 const MATERIAL_MODULES = [MatAutocompleteModule,MatButtonModule,
     MatButtonToggleModule,MatCardModule,MatChipsModule,MatCheckboxModule,
     MatDatepickerModule,MatTableModule,MatDialogModule,MatFormFieldModule,
@@ -44,7 +45,7 @@ const MATERIAL_MODULES = [MatAutocompleteModule,MatButtonModule,
     MatRippleModule,MatSelectModule,MatSidenavModule,MatSliderModule,
     MatSlideToggleModule,MatSnackBarModule,MatSortModule,MatStepperModule,
     MatToolbarModule,MatTooltipModule,OverlayModule,
-    PortalModule,BidiModule,A11yModule,MatCommonModule,ObserversModule,MatNativeDateModule ];
+    PortalModule,BidiModule,A11yModule,MatCommonModule,ObserversModule,MatNativeDateModule,MatTabsModule ];
     @NgModule({
         imports: MATERIAL_MODULES,
         declarations: [],

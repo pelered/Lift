@@ -165,7 +165,7 @@ export class IspisLiftovaComponent implements OnInit {
       })     
   
 
-      this.liftovi = data;     
+      this.liftovi != data;     
         this.dataSource = new MatTableDataSource(this.LiftData);
         setTimeout(() => {
           this.dataSource.paginator = this.paginator;
@@ -194,10 +194,10 @@ export class IspisLiftovaComponent implements OnInit {
     for(let a of this.LiftData) {
       if(a.ime==ime) {
         this.isti_naziv=true;
-        console.log("Postoji lift s tim nazivom",this.isti_naziv)
+        //console.log("Postoji lift s tim nazivom",this.isti_naziv)
         break;
       }else{
-        console.log("Ne Postoji lift s tim nazivom",this.isti_naziv)
+        //console.log("Ne Postoji lift s tim nazivom",this.isti_naziv)
         this.isti_naziv=false;
       }
    } 
