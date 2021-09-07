@@ -45,7 +45,6 @@ export class IspisLiftovaComponent implements OnInit {
   isti_naziv!:boolean;
   cijelaZgrada:any=[]
   cijelaPod:any=[];
-  el:string="-MirRUBFkWUnOvUJt3Bx"
   //size$: BehaviorSubject<string|null>;
   travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
   displayedColumns: any[] = [

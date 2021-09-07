@@ -38,7 +38,7 @@ export class IspisVoznjiComponent implements OnInit {
   dataSource!: MatTableDataSource<Voznja>;
   @ViewChild(MatPaginator,{static: true})
   paginator!: MatPaginator;
-
+  isLoading = true;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   /*@ViewChild(MatSort)
   sort!: MatSort;*/
@@ -85,6 +85,9 @@ export class IspisVoznjiComponent implements OnInit {
     }
 
   };
+
+  
+
   public barChartLabels: Label[] = ['Pon', 'Uto', 'Sri', 'Cet', 'Pet', 'Sub', 'Ned'];
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
@@ -155,7 +158,7 @@ public barChartData2: ChartDataSets[] = [
 ];
 data3: Array<number> =[0, 0, 0, 0, 0, 0, 0]
  
-najnizi!:number| undefined;
+najnizi!:number;
 najvisi!:number| undefined;
 
 travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
@@ -194,10 +197,7 @@ travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
       //console.log("Podaci2",this.zgrada.ime);
       if(history.state.data2!=undefined){
           this.podzg=history.state.data2;
-        }
-
-        
-        
+        }       
         
    }
    ngOnChanges():void{
@@ -206,9 +206,7 @@ travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
    }
   ngOnInit(): void {
     this.TravelData = [];
-
     this.setValues();
-    
     this.retrieveLifts();
   }
   ngAfterViewInit() {
@@ -298,7 +296,6 @@ travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
     }
     //this.najnizi=this.lift.n_k;
     //this.najvisi=this.lift.v_k;
-    
 
   }
   retrieveLifts() {
@@ -307,10 +304,18 @@ travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
          data.forEach((ele)=> { 
           this.TravelData.push(ele.payload.val() as Voznja)
         })
+        if(data.length==0){
+          console.log("Vrtim1");
+          this.isLoading=false;
+        }else{
+          console.log("Vrtim");
+          this.isLoading=false;
+        }
+      
         //dodajem kod ovdje
 
-console.log("Travel",this.TravelData);
-console.log("Travel1:",data);
+//console.log("Travel",this.TravelData);
+//console.log("Travel1:",data);
 let lista_katova: number[]=[];
 if(this.TravelData.length!=0 && this.TravelData!=undefined && this.TravelData!=null){
   for(let i=0; i<this.TravelData.length;i++){
@@ -318,22 +323,29 @@ if(this.TravelData.length!=0 && this.TravelData!=undefined && this.TravelData!=n
     this.TravelData[i].end_time=this.pipe.transform(this.TravelData[i].end_time, 'MM/dd/yyyy, HH:mm:ss')
     
   }
-  this.najvisi=this.TravelData[this.TravelData.length-1].v_k;
-  this.najnizi=this.TravelData[this.TravelData.length-1].n_k;
+  //this.najvisi=this.TravelData[this.TravelData.length-1].v_k;
+  //this.najnizi=this.TravelData[this.TravelData.length-1].n_k;
+  console.log("Lift_data",this.lift.n_k,this.lift.v_k);
+  this.najvisi=this.lift.n_k;
+  this.najnizi!=this.lift.v_k;
+  console.log("Katovi",this.najnizi,this.najvisi)
   //let lista_katova: number[]=[];
-  this,this.data3=[];
+  this.data3=[];
  // if(this.najvisi!=undefined && this.najnizi!=undefined){
     let k=0;
-    for(let i=this.najnizi;i!<=this.najvisi!;i!++){
-      console.log("Label1",i);
-      this.barChartLabels2[k]=i+"";
+    this.barChartLabels2=[]
+
+    for(let i=this.lift.n_k;i!<=this.lift.v_k!;i!++){
+      //console.log("Label1",i);
+      this.barChartLabels2.push(i+"")
+      //this.barChartLabels2[k]=i+"";
       k++;
       lista_katova.push(i!);
       this.data3.push(0);
 
     }
     console.log("lista katova",lista_katova);
-
+    console.log("Podaci",this.barChartLabels2);
 
   //}
 }
@@ -386,14 +398,11 @@ if(this.TravelData.length>0){
           //console.log("It is a Saturday.");
           break;
       default:
-          //console.log("No such day exists!");
           break;
   }
   
-  //console.log("Lista_katova",lista_katova);
 
   for(let i=0;i<lista_katova.length;i++){
-    //console.log("Katovi",el.p_k,el.z_k)
     if(el.p_k==lista_katova[i]){
       this.data3[i]++;
 
@@ -403,21 +412,12 @@ if(this.TravelData.length>0){
     }
     
   }
-  /*for(let i=0;i<lista_katova.length;i++){
-    //console.log("Katovi",el.p_k,el.z_k)
-    
-    if(el.z_k==lista_katova[i]){
-      this.data3[i]++;
-    }
-  }*/
+
  
   
   })
 }
 
-//console.log("Lista1:",this.data1);
-//console.log("Lista2:",this.data2);
-//console.log("Lista3:",this.data3);
 
 
 this.barChartData=[
@@ -437,34 +437,10 @@ this.barChartData2=[
 
     this.dataSource.paginator = this.paginator;
   }, 0);
-        //oovdje zavrsava
 
     })
    
-    /*this.travel_service.getAllTravels().snapshotChanges().pipe(
-      map(changes =>
-        changes.map(c =>
-          ({ key: c.payload.key, ...c.payload.val()
-            
-          })
-          
-        )
-      )
-    ).subscribe(data => {
-      //ovo je pod subscribe
-      this.TravelData=[];
-    
-      
-      data.forEach(item => {
-        if( item.id_lift==this.id){        
-          this.TravelData.push(item as Voznja)
-
-
-        }
-      })   
-      
-        //ovdje zavrsava
-    });  */
+  
     
 
     this.travel_service.getStateLift().snapshotChanges().pipe(
@@ -528,11 +504,7 @@ clearFromDate()
   this.dataSource.sort = this.sort;
   this.dataSource.paginator = this.paginator;
 }
-clearToDate(){
-  this.dataSource.data=this.TravelData;
-  
 
-}
 promjeni(){
   if(this.stanje=="Zaustavi"){
     this.mjeri_state.state=false;
@@ -547,19 +519,30 @@ promjeni(){
   }
 }
 
-Skini(){
-  //var image = document.getElementById("voznje")!.toBase64Image();
-  var canvas : any = document.getElementById("voznje");
+Skini(hist:string){
+  switch (hist) {
+    case 'voznja':
+      var canvas : any = document.getElementById(hist);
+      break;
+    case 'ljudi':
+      var canvas : any = document.getElementById(hist);
+      break;
+    case 'kat':
+      var canvas : any = document.getElementById(hist);
+      break;
+
+  }
+  
   var ctx = canvas.getContext("2d");
-  //var image = ctx.toDataURL("image/jpeg");
+  ctx.globalCompositeOperation = 'destination-over'
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   var dataURL = canvas.toDataURL("image/png", 1.0);
   var link = document.createElement('a');
-  link.download = "my-image.png";
+  link.download = "my-chart.png";
   link.href = dataURL;
   link.click();
-  //window.open(dataURL);
-    //console.log("Link",dataURL)
-  
+
 }
 
 

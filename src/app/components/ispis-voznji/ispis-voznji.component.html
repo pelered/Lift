@@ -5,7 +5,8 @@
 
   <div class="div-buttons">
     <button mat-stroked-button *ngIf="zgrada!=undefined">
-      <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+      <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon">
+        <span class="material-icons-outlined">
         business
         </span></mat-icon> {{zgrada.ime}} </button>    
           
@@ -151,7 +152,9 @@
     <mat-tab label="Histogram-broj vožnji dnevno">
 
       <div class="div-graphs" [hidden]="!(TravelData.length > 0)">
-        <canvas id="voznje" baseChart style="background-color: white";
+        <canvas id="voznja"
+        style="background-color: white"
+         baseChart 
           [datasets]="barChartData"
           [labels]="barChartLabels"
           [options]="barChartOptions"
@@ -162,7 +165,10 @@
         </canvas>
       </div>
   
-      <button (click)="Skini()" href="">Skini</button>
+      <button  class ="topcorner" mat-stroked-button  (click)="Skini('voznja')" ><mat-icon aria-hidden="false"
+         class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+        file_download
+        </span></mat-icon></button>
     </mat-tab>
     <mat-tab label="Histogram-broj osoba dnevno">
       <div  class="div-graphs"   [hidden]="!(TravelData.length > 0)">
@@ -176,7 +182,10 @@
           [colors]="colors">
         </canvas>
       </div>
-     
+      <button  class ="topcorner" mat-stroked-button  (click)="Skini('ljudi')" ><mat-icon aria-hidden="false"
+        class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+       file_download
+       </span></mat-icon></button>
     </mat-tab>
     <mat-tab label="Histogram-posjećenost katova">
       <div class="div-graphs"   [hidden]="!(TravelData.length > 0)">
@@ -190,10 +199,20 @@
           [colors]="colors">
         </canvas>
       </div>
-     
+      <button  class ="topcorner" mat-stroked-button  (click)="Skini('kat')" ><mat-icon aria-hidden="false"
+        class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+       file_download
+       </span></mat-icon></button>
     </mat-tab>
   </mat-tab-group>
 
+</div>
+<div *ngIf="isLoading" 
+   style="display: flex; justify-content: center; align-items: center; background: white;">
+  <mat-progress-spinner 
+    color="primary" 
+    mode="indeterminate">
+  </mat-progress-spinner>
 </div>
  
  

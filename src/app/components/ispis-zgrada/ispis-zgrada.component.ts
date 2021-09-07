@@ -218,7 +218,7 @@ export class IspisZgradaComponent implements OnInit {
 
     this.dialogo
       .open(DialogoConfirmacionComponent, {
-        data: `Sigurno želite obrisati ?`
+        data: `Sigurno želite obrisati sve podatke ?`
       })
       .afterClosed()
       .subscribe((confirm: Boolean) => {

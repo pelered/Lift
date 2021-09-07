@@ -90,25 +90,25 @@
 
               -->
                
-              <button mat-raised-button color="red"
+              <button mat-raised-button 
                (click)=editZgrada(element.key,element.ime,i,is_selected[i]) class="push-right" 
                 [disabled]=" is_selected[i]==undefined || edit"  
                 *ngIf="is_edit[i]==false && getSpecificPodZg(element.key).length">Edit</button>
-              <button mat-raised-button color="red" 
+              <button mat-raised-button  
               (click)=editZgrada(element.key,element.ime,i,is_selected[i]) 
               class="push-right"  *ngIf="is_edit[i]==false && !getSpecificPodZg(element.key).length" 
               [disabled]="edit">Edit</button>
              
 
-              <button mat-raised-button color="red"  class="push-right" 
+              <button mat-raised-button   class="push-right" 
               [disabled]="value ==='' || value2 ===''||isti_naziv "
               (click)=saveZgrada(element.key,element.ime,i,is_selected[i]) 
               *ngIf="is_edit[i]==true">Save</button>
              
-                <button mat-raised-button color="red" *ngIf="getSpecificPodZg(element.key).length"
-                 [disabled]="is_selected[i]==undefined" (click)="Dialog(element.key,is_selected[i])"
+                <button mat-raised-button  *ngIf="getSpecificPodZg(element.key).length"
+                 [disabled]="is_selected[i]==undefined" color="warn"  (click)="Dialog(element.key,is_selected[i])"
                  >Delete</button>
-                <button mat-raised-button color="red" *ngIf="!getSpecificPodZg(element.key).length" 
+                <button mat-raised-button color="warn" *ngIf="!getSpecificPodZg(element.key).length" 
                 (click)="Dialog(element.key,'false')"
                 
                 >Delete</button>
