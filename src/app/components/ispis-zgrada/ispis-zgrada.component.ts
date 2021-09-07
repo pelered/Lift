@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ZgradaService } from 'src/app/services/zgrada/zgrada.service';
 import { Zgrada } from 'src/app/models/zgrada/zgrada';
-import { MatPaginator} from '@angular/material/paginator';
+import { MatPaginator, PageEvent} from '@angular/material/paginator';
 import {  MatTableDataSource } from '@angular/material/table';
 import { User } from 'src/app/models/user';
 import {MatSort} from '@angular/material/sort';
@@ -34,8 +34,9 @@ export class IspisZgradaComponent implements OnInit {
   zgrade?:Zgrada[];
 
   dataSource!: MatTableDataSource<Zgrada>;
+  @ViewChild(MatPaginator,{static: true})
   paginator!: MatPaginator;
-  @ViewChild(MatPaginator)
+ 
   ZgradaData: any = [];
   LiftData: any = [];
   PodZgrada: any=[];
@@ -90,7 +91,7 @@ export class IspisZgradaComponent implements OnInit {
     'action'
   ];
 
-  
+  pageEvent!: PageEvent;
   constructor(private zgrada_service: ZgradaService
    ,private lift_service:LiftService,private voznja_service:PutovanjeService,
    public dialogo: MatDialog) { 
@@ -111,7 +112,14 @@ export class IspisZgradaComponent implements OnInit {
     this.retrieveZgrade();
     
   }
-  
+  ngAfterViewInit() {
+    //this.dataSource.paginator = this.paginator;
+
+ 
+   // console.log("Sort",this.sort);
+    
+
+  }
   ngOnChanges():void{
     //this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
@@ -189,11 +197,13 @@ export class IspisZgradaComponent implements OnInit {
      //console.log("Podzgrada:",this.PodZgrada);
      //console.log("Sve zgrade:",this.zgrade);
         this.dataSource = new MatTableDataSource(this.LiftData);
-        //console.log("Datas",this.dataSource);
-        setTimeout(() => {
+        console.log("Datas",this.LiftData);
+        /*setTimeout(() => {
           //this.dataSource.sort = this.sort;
           this.dataSource.paginator = this.paginator;
-        }, 0);
+        }, 1000);*/
+        setTimeout(() => this.dataSource.paginator = this.paginator);
+
     });
 
   }
@@ -302,6 +312,9 @@ export class IspisZgradaComponent implements OnInit {
     }
     //todo edit gumb nestaje ako se samo podz promjeni naziv
 
+  }
+  onPaginateChange(event: any){
+    console.log("Event",event)
   }
   
   removeZgrada_Pod(key_zg:string,key_podzg:string):void{

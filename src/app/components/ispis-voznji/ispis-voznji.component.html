@@ -214,7 +214,16 @@
     mode="indeterminate">
   </mat-progress-spinner>
 </div>
- 
+ <div *ngIf=" !isLoading && this.TravelData.length==0">
+   <table>
+    <tr class="mat-row" >
+      <td class="mat-cell" colspan="4">Nema podataka</td>
+    </tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+   </table>
+  
+ </div>
  
   
 
