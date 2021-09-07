@@ -26,6 +26,9 @@ import { IspisLiftovaComponent } from './components/ispis-liftova/ispis-liftova.
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { ChartsModule } from 'ng2-charts';
+import { DialogoConfirmacionComponent } from './dialog/dialogo-confirmacion.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,6 +39,7 @@ import { ChartsModule } from 'ng2-charts';
     VerifyEmailComponent,
     IspisZgradaComponent,
     IspisLiftovaComponent,
+    DialogoConfirmacionComponent
 
   ],
   imports: [
@@ -50,10 +54,16 @@ import { ChartsModule } from 'ng2-charts';
     FlexLayoutModule,
     MatSortModule,
     MatTableExporterModule,
-    ChartsModule
+    ChartsModule,
+    MatDialogModule, 
+    MatButtonModule,
+    
   ],
   providers: [Lift,AuthService],
   bootstrap: [AppComponent],
+  entryComponents: [
+    DialogoConfirmacionComponent// <--- Aquí
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

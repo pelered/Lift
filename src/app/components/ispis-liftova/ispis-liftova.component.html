@@ -71,18 +71,14 @@
                 <button mat-raised-button color="primary" class="push-right"
                 [routerLink]="['/ispis-voznji/',element.key]" [state]="{ data:element,data1:zgrada,data2:podzg}"
                   >Open</button>
-                 
-                  <!--todo dodaj da se može maknuti cijela zgrada,uz uvjet da mjerenje/a prestane/u
-                  te da se ne izbriši odmah iz baze nego nakon par dana ali mjerejrenj je pauzirano
-                [routerLink]="['/edit-book/', element.$key]"
-              -->
+              
                 <button mat-raised-button color="red" (click)=editLift(element.key,element.ime,i) 
                 class="push-right" *ngIf="is_edit[i]==false"
                 [disabled]=" edit" >Edit</button>
                 <button mat-raised-button color="red"  class="push-right" 
                 (click)=saveLift(element.key,element.ime,i) *ngIf="is_edit[i]==true"
                 [disabled]="isti_naziv || value ===''">Save</button>
-                <button mat-raised-button color="red" (click)=removeLift(element) >Delete</button>
+                <button mat-raised-button color="warn" (click)="Dialog(element.key)" >Delete</button>
               </td>
             </ng-container>
       

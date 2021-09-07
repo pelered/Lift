@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Potvrda</h1>
+<div mat-dialog-content>
+    <p>{{mensaje}}</p>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="cerrarDialogo()">Ne</button>
+    <button mat-button (click)="confirmado()" cdkFocusInitial>Da</button>
+</div>

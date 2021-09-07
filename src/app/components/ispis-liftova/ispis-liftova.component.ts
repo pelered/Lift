@@ -15,6 +15,9 @@ import { switchMap } from 'rxjs/operators';
 import firebase from 'firebase';
 import { PutovanjeService } from 'src/app/services/putovanje/putovanje.service';
 import { ZgradaService } from 'src/app/services/zgrada/zgrada.service';
+import { MatDialog } from "@angular/material/dialog";
+
+import { DialogoConfirmacionComponent } from 'src/app/dialog/dialogo-confirmacion.component';
 @Component({
   selector: 'app-ispis-liftova',
   templateUrl: './ispis-liftova.component.html',
@@ -42,7 +45,7 @@ export class IspisLiftovaComponent implements OnInit {
   isti_naziv!:boolean;
   cijelaZgrada:any=[]
   cijelaPod:any=[];
-
+  el:string="-MirRUBFkWUnOvUJt3Bx"
   //size$: BehaviorSubject<string|null>;
   travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
   displayedColumns: any[] = [
@@ -53,7 +56,8 @@ export class IspisLiftovaComponent implements OnInit {
     'action'
   ];
   constructor(private lift_service: LiftService,private actRoute: ActivatedRoute,
-    private voznja_service:PutovanjeService,private zgrada_service: ZgradaService) {
+    private voznja_service:PutovanjeService,private zgrada_service: ZgradaService,
+    public dialogo: MatDialog) {
       this.id = this.actRoute.snapshot.paramMap.get('id');
       this.zgrada=history.state.data;       
       if(history.state.data2!=undefined){
@@ -71,6 +75,23 @@ export class IspisLiftovaComponent implements OnInit {
 
     
    }
+   Dialog(key:string): void {
+
+    this.dialogo
+      .open(DialogoConfirmacionComponent, {
+        data: `Sigurno želite obrisati ovaj lift i sve njegove izmjerene podatke?`
+      })
+      .afterClosed()
+      .subscribe((confirm: Boolean) => {
+        if (confirm) {
+          this.removeLift(key);
+          alert("Brisanje");
+
+        } else {
+          alert("Odustali ste");
+        }
+      });
+  }
  
 
   ngOnInit(): void {
@@ -205,16 +226,21 @@ export class IspisLiftovaComponent implements OnInit {
   }
 
   removeLift(lift:any):void{
+    //todo da makne iz liste onoga kojega smo izbrisali
+    //this.is_edit.pop;
     console.log("Lift",lift);
     const index = this.zgrada.lifts!.indexOf(lift.key, 0);
     if (index > -1) {
       this.zgrada.lifts!.splice(index, 1);
     }  
 
-    const index1 = this.podzg.lifts!.indexOf(lift.key, 0);
-    if (index1 > -1) {
-      this.podzg.lifts!.splice(index1, 1);
-    }  
+    if(this.podzg!=undefined){
+      const index1 = this.podzg.lifts!.indexOf(lift.key, 0);
+      if (index1 > -1) {
+        this.podzg.lifts!.splice(index1, 1);
+      } 
+    }
+     
 
     console.log("Zg",this.zgrada);
     console.log("Pod",this.podzg);
@@ -228,7 +254,10 @@ export class IspisLiftovaComponent implements OnInit {
     this.lift_service.delete(lift.key);
     })
     this.zgrada_service.update(lift.zgrada,this.zgrada);
-    this.zgrada_service.updateP(lift.pod_zg,this.podzg);
+    if(this.podzg!=undefined){
+      this.zgrada_service.updateP(lift.pod_zg,this.podzg);
+
+    }
 
   }
   applyFilter(event: Event) {

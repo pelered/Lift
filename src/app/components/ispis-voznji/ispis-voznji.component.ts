@@ -71,6 +71,19 @@ export class IspisVoznjiComponent implements OnInit {
    //za broj voznji
    public barChartOptions: ChartOptions = {
     responsive: true,
+    animation: {
+      duration: 0 // general animation time
+    },
+    hover: {
+      animationDuration: 0 // duration of animations when hovering an item
+    },
+    responsiveAnimationDuration: 0, // animation duration after a resize
+    elements: {
+      line: {
+        tension: 0 // disables bezier curves
+      }
+    }
+
   };
   public barChartLabels: Label[] = ['Pon', 'Uto', 'Sri', 'Cet', 'Pet', 'Sub', 'Ned'];
   public barChartType: ChartType = 'bar';
@@ -83,6 +96,7 @@ export class IspisVoznjiComponent implements OnInit {
       
     }
   ];
+
   public barChartData: ChartDataSets[] = [
     { data: [], label: 'Series A' }
   ];
@@ -91,6 +105,19 @@ export class IspisVoznjiComponent implements OnInit {
 //za broj ljudi
 public barChartOptions1: ChartOptions = {
   responsive: true,
+  
+    animation: {
+      duration: 0 // general animation time
+    },
+    hover: {
+      animationDuration: 0 // duration of animations when hovering an item
+    },
+    responsiveAnimationDuration: 0, // animation duration after a resize
+    elements: {
+      line: {
+        tension: 0 // disables bezier curves
+      }
+    }
 };
 public barChartLabels1: Label[] = ['Pon', 'Uto', 'Sri', 'Cet', 'Pet', 'Sub', 'Ned'];
 public barChartType1: ChartType = 'bar';
@@ -105,6 +132,19 @@ data2: Array<number> =[0, 0, 0, 0, 0, 0, 0]
 //posjećenost katova
 public barChartOptions2: ChartOptions = {
   responsive: true,
+  
+    animation: {
+      duration: 0 // general animation time
+    },
+    hover: {
+      animationDuration: 0 // duration of animations when hovering an item
+    },
+    responsiveAnimationDuration: 0, // animation duration after a resize
+    elements: {
+      line: {
+        tension: 0 // disables bezier curves
+      }
+    }
 };
 public barChartLabels2: Label[] = [];
 public barChartType2: ChartType = 'bar';
@@ -117,6 +157,9 @@ data3: Array<number> =[0, 0, 0, 0, 0, 0, 0]
  
 najnizi!:number| undefined;
 najvisi!:number| undefined;
+
+travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
+
   constructor(private travel_service: PutovanjeService,private actRoute: ActivatedRoute) {
     this.id = this.actRoute.snapshot.paramMap.get('id')!;
     this.dataSource= new MatTableDataSource();
@@ -134,12 +177,12 @@ najvisi!:number| undefined;
            data.forEach((ele)=> { 
              this.mjeri_state=ele.payload.val();
              if(!this.mjeri_state.state){
-               console.log("Gumb",this.stanje);
+               //console.log("Gumb",this.stanje);
                this.stanje="Pokreni"
              }else if(this.mjeri_state.state){
 
                this.stanje="Zaustavi"
-               console.log("Gumb1",this.stanje);
+               //console.log("Gumb1",this.stanje);
 
              }
           })
@@ -259,8 +302,146 @@ najvisi!:number| undefined;
 
   }
   retrieveLifts() {
+    this.travels$=this.travel_service.getListPutovanjaQuery(this.id);
+    this.travels$.forEach(data =>{
+         data.forEach((ele)=> { 
+          this.TravelData.push(ele.payload.val() as Voznja)
+        })
+        //dodajem kod ovdje
+
+console.log("Travel",this.TravelData);
+console.log("Travel1:",data);
+let lista_katova: number[]=[];
+if(this.TravelData.length!=0 && this.TravelData!=undefined && this.TravelData!=null){
+  for(let i=0; i<this.TravelData.length;i++){
+    this.TravelData[i].start_time=this.pipe.transform(this.TravelData[i].start_time, 'MM/dd/yyyy, HH:mm:ss')
+    this.TravelData[i].end_time=this.pipe.transform(this.TravelData[i].end_time, 'MM/dd/yyyy, HH:mm:ss')
+    
+  }
+  this.najvisi=this.TravelData[this.TravelData.length-1].v_k;
+  this.najnizi=this.TravelData[this.TravelData.length-1].n_k;
+  //let lista_katova: number[]=[];
+  this,this.data3=[];
+ // if(this.najvisi!=undefined && this.najnizi!=undefined){
+    let k=0;
+    for(let i=this.najnizi;i!<=this.najvisi!;i!++){
+      console.log("Label1",i);
+      this.barChartLabels2[k]=i+"";
+      k++;
+      lista_katova.push(i!);
+      this.data3.push(0);
+
+    }
+    console.log("lista katova",lista_katova);
+
+
+  //}
+}
+
+
+
+//console.log("Labels",this.barChartLabels2);
+this.data1 =[0, 0, 0, 0, 0, 0, 0]
+this.data2 =[0, 0, 0, 0, 0, 0, 0]
+if(this.TravelData.length>0){
+  this.TravelData.forEach((el:any)=>      {
+
+    let day=this.pipe.transform(el.start_time,'EEEE')
+    //console.log("Dan",day);
+    switch (day) {
+      case "Sunday":
+        //console.log("Br_ljudi",el.count_p)
+        this.data1[6]=this.data1[6]+1;
+        this.data2[6]=this.data2[6]+el.count_p;
+          //console.log("It is a Sunday.");
+          break;
+      case "Monday":
+        this.data1[0]=this.data1[0]+1;
+        this.data2[0]=this.data2[0]+el.count_p;
+          //console.log("It is a Monday.");
+          break;
+      case "Tuesday":
+        this.data1[1]=this.data1[1]+1;
+        this.data2[1]=this.data2[1]+el.count_p;
+          //console.log("It is a Tuesday.");
+          break;
+      case "Wednesday":
+        this.data1[2]=this.data1[2]+1;
+        this.data2[2]=this.data2[2]+el.count_p;
+          //console.log("It is a Wednesday.");
+          break;
+      case "Thursday":
+        this.data1[3]=this.data1[3]+1;
+        this.data2[3]=this.data2[3]+el.count_p;
+          //console.log("It is a Thursday.");
+          break;
+      case "Friday":
+        this.data1[4]=this.data1[4]+1;
+        this.data2[4]=this.data2[4]+el.count_p;
+          //console.log("It is a Friday.");
+          break;
+      case "Saturday":
+        this.data1[5]=this.data1[5]+1;
+        this.data2[5]=this.data2[5]+el.count_p;
+          //console.log("It is a Saturday.");
+          break;
+      default:
+          //console.log("No such day exists!");
+          break;
+  }
+  
+  //console.log("Lista_katova",lista_katova);
+
+  for(let i=0;i<lista_katova.length;i++){
+    //console.log("Katovi",el.p_k,el.z_k)
+    if(el.p_k==lista_katova[i]){
+      this.data3[i]++;
+
+    }
+    if(el.z_k==lista_katova[i]){
+      this.data3[i]++;
+    }
+    
+  }
+  /*for(let i=0;i<lista_katova.length;i++){
+    //console.log("Katovi",el.p_k,el.z_k)
+    
+    if(el.z_k==lista_katova[i]){
+      this.data3[i]++;
+    }
+  }*/
+ 
+  
+  })
+}
+
+//console.log("Lista1:",this.data1);
+//console.log("Lista2:",this.data2);
+//console.log("Lista3:",this.data3);
+
+
+this.barChartData=[
+  { data: this.data1, label: 'Broj vožnji liftom' }
+];
+this.barChartData1=[
+  { data: this.data2, label: 'Broj ljudi dnevno' }
+];
+this.barChartData2=[
+  { data: this.data3, label: 'Posjećenost kata' }
+];
+
+
+  this.dataSource = new MatTableDataSource(this.TravelData);
+  setTimeout(() => {
+    this.dataSource.sort = this.sort;
+
+    this.dataSource.paginator = this.paginator;
+  }, 0);
+        //oovdje zavrsava
+
+    })
    
-    this.travel_service.getAllTravels().snapshotChanges().pipe(
+    /*this.travel_service.getAllTravels().snapshotChanges().pipe(
       map(changes =>
         changes.map(c =>
           ({ key: c.payload.key, ...c.payload.val()
@@ -270,6 +451,7 @@ najvisi!:number| undefined;
         )
       )
     ).subscribe(data => {
+      //ovo je pod subscribe
       this.TravelData=[];
     
       
@@ -280,125 +462,10 @@ najvisi!:number| undefined;
 
         }
       })   
-
       
-      
-
-      for(let i=0; i<this.TravelData.length;i++){
-        this.TravelData[i].start_time=this.pipe.transform(this.TravelData[i].start_time, 'MM/dd/yyyy, HH:mm:ss')
-        this.TravelData[i].end_time=this.pipe.transform(this.TravelData[i].end_time, 'MM/dd/yyyy, HH:mm:ss')
-        
-      }
-      this.najvisi=this.TravelData[this.TravelData.length-1].v_k;
-      this.najnizi=this.TravelData[this.TravelData.length-1].n_k;
-      let lista_katova: number[]=[];
-      this,this.data3=[];
-      if(this.najvisi!=undefined && this.najnizi!=undefined){
-        let k=0;
-        for(let i=this.najnizi;i!<=this.najvisi;i!++){
-          //console.log("Label1",i);
-          this.barChartLabels2[k]=i+"";
-          k++;
-          lista_katova.push(i);
-          this.data3.push(0);
-
-        }
-      }
-      //console.log("Labels",this.barChartLabels2);
-      this.data1 =[0, 0, 0, 0, 0, 0, 0]
-      this.data2 =[0, 0, 0, 0, 0, 0, 0]
-      if(this.TravelData.length>0){
-        this.TravelData.forEach((el:any)=>      {
-
-          let day=this.pipe.transform(el.start_time,'EEEE')
-          //console.log("Dan",day);
-          switch (day) {
-            case "Sunday":
-              //console.log("Br_ljudi",el.count_p)
-              this.data1[6]=this.data1[6]+1;
-              this.data2[6]=this.data2[6]+el.count_p;
-                //console.log("It is a Sunday.");
-                break;
-            case "Monday":
-              this.data1[0]=this.data1[0]+1;
-              this.data2[0]=this.data2[0]+el.count_p;
-                //console.log("It is a Monday.");
-                break;
-            case "Tuesday":
-              this.data1[1]=this.data1[1]+1;
-              this.data2[1]=this.data2[1]+el.count_p;
-                //console.log("It is a Tuesday.");
-                break;
-            case "Wednesday":
-              this.data1[2]=this.data1[2]+1;
-              this.data2[2]=this.data2[2]+el.count_p;
-                //console.log("It is a Wednesday.");
-                break;
-            case "Thursday":
-              this.data1[3]=this.data1[3]+1;
-              this.data2[3]=this.data2[3]+el.count_p;
-                //console.log("It is a Thursday.");
-                break;
-            case "Friday":
-              this.data1[4]=this.data1[4]+1;
-              this.data2[4]=this.data2[4]+el.count_p;
-                //console.log("It is a Friday.");
-                break;
-            case "Saturday":
-              this.data1[5]=this.data1[5]+1;
-              this.data2[5]=this.data2[5]+el.count_p;
-                //console.log("It is a Saturday.");
-                break;
-            default:
-                //console.log("No such day exists!");
-                break;
-        }
-        
-        //console.log("Lista_katova",lista_katova);
-
-        for(let i=0;i<lista_katova.length;i++){
-          //console.log("Katovi",el.p_k,el.z_k)
-          if(el.p_k==lista_katova[i]){
-            this.data3[i]++;
-
-          }
-          
-        }
-        for(let i=0;i<lista_katova.length;i++){
-          //console.log("Katovi",el.p_k,el.z_k)
-          
-          if(el.z_k==lista_katova[i]){
-            this.data3[i]++;
-          }
-        }
-       
-        
-        })
-      }
-      
-      console.log("Lista1:",this.data1);
-      console.log("Lista2:",this.data2);
-      console.log("Lista3:",this.data3);
-
-
-      this.barChartData=[
-        { data: this.data1, label: 'Broj vožnji liftom' }
-      ];
-      this.barChartData1=[
-        { data: this.data2, label: 'Broj ljudi dnevno' }
-      ];
-      this.barChartData2=[
-        { data: this.data3, label: 'Posjećenost kata' }
-      ];
-
-     
-        this.dataSource = new MatTableDataSource(this.TravelData);
-        setTimeout(() => {
-          this.dataSource.sort = this.sort;
-
-          this.dataSource.paginator = this.paginator;
-        }, 0);
-    });  
+        //ovdje zavrsava
+    });  */
+    
 
     this.travel_service.getStateLift().snapshotChanges().pipe(
       map(changes =>
@@ -479,6 +546,22 @@ promjeni(){
 
   }
 }
+
+Skini(){
+  //var image = document.getElementById("voznje")!.toBase64Image();
+  var canvas : any = document.getElementById("voznje");
+  var ctx = canvas.getContext("2d");
+  //var image = ctx.toDataURL("image/jpeg");
+  var dataURL = canvas.toDataURL("image/png", 1.0);
+  var link = document.createElement('a');
+  link.download = "my-image.png";
+  link.href = dataURL;
+  link.click();
+  //window.open(dataURL);
+    //console.log("Link",dataURL)
+  
+}
+
 
 }
 
