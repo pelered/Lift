@@ -17,6 +17,7 @@ import { LiftMjeri } from 'src/app/models/lift/lift-mjeri';
 import { Lift } from 'src/app/models/lift/lift';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
 import { Colors, Label } from 'ng2-charts';
+import { LiftService } from 'src/app/services/lift/lift.service';
 @Component({
   selector: 'app-ispis-voznji',
   templateUrl: './ispis-voznji.component.html',
@@ -54,6 +55,7 @@ export class IspisVoznjiComponent implements OnInit {
   //
   pipe: DatePipe;
   mjeri$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
+  lift$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
 
 
 
@@ -159,6 +161,7 @@ public barChartData2: ChartDataSets[] = [
 data3: Array<number> =[0, 0, 0, 0, 0, 0, 0]
 
 
+//po satima
 public barChartOptions3: ChartOptions = {
   responsive: true,
   
@@ -193,7 +196,8 @@ najvisi!:number| undefined;
 
 travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
 
-  constructor(private travel_service: PutovanjeService,private actRoute: ActivatedRoute) {
+  constructor(private travel_service: PutovanjeService,private actRoute: ActivatedRoute,
+    private lift_service:LiftService) {
     this.id = this.actRoute.snapshot.paramMap.get('id')!;
     this.dataSource= new MatTableDataSource();
     this.pipe = new DatePipe('en');
@@ -203,26 +207,37 @@ travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
     console.log("Lift:",this.lift);
     //this.najnizi=this.lift.n_k;
     //this.najvisi=this.lift.v_k;
-    if(this.lift.is_connected){
-      this.prikazi=true;
-      this.mjeri$=this.travel_service.getMjeriQ(this.lift.key!);
-      this.mjeri$.forEach(data =>{
-           data.forEach((ele)=> { 
-             this.mjeri_state=ele.payload.val();
-             if(!this.mjeri_state.state){
-               //console.log("Gumb",this.stanje);
-               this.stanje="Pokreni"
-             }else if(this.mjeri_state.state){
+    this.lift$=this.lift_service.getLiftQuery(this.id)
+    this.lift$.forEach(data =>{
+      data.forEach((ele)=> { 
+        this.lift=ele.payload.val();
+        this.lift.key=ele.key!
+        localStorage.setItem("Lift",JSON.stringify(this.lift));
+        if(this.lift.is_connected){
+          this.prikazi=true;
+          this.mjeri$=this.travel_service.getMjeriQ(this.lift.key!);
+          this.mjeri$.forEach(data =>{
+               data.forEach((ele)=> { 
+                 this.mjeri_state=ele.payload.val();
+                 if(!this.mjeri_state.state){
+                   this.stanje="Pokreni"
+                   //console.log("Gumb",this.stanje);
 
-               this.stanje="Zaustavi"
-               //console.log("Gumb1",this.stanje);
-
-             }
+                 }else if(this.mjeri_state.state){
+    
+                   this.stanje="Zaustavi"
+                   //console.log("Gumb1",this.stanje);
+    
+                 }
+              })
           })
+        }else{
+          this.prikazi=false;
+        }
+
       })
-    }else{
-      this.prikazi=false;
-    }
+ })
+   
 
       //console.log("Podaci2",this.zgrada.ime);
       if(history.state.data2!=undefined){
@@ -331,14 +346,15 @@ travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
   retrieveLifts() {
     this.travels$=this.travel_service.getListPutovanjaQuery(this.id);
     this.travels$.forEach(data =>{
+      this.TravelData=[];
          data.forEach((ele)=> { 
           this.TravelData.push(ele.payload.val() as Voznja)
         })
         if(data.length==0){
-          console.log("Vrtim1");
+          //console.log("Vrtim1");
           this.isLoading=false;
         }else{
-          console.log("Vrtim");
+          //console.log("Vrtim");
           this.isLoading=false;
         }
       
@@ -355,10 +371,10 @@ if(this.TravelData.length!=0 && this.TravelData!=undefined && this.TravelData!=n
   }
   //this.najvisi=this.TravelData[this.TravelData.length-1].v_k;
   //this.najnizi=this.TravelData[this.TravelData.length-1].n_k;
-  console.log("Lift_data",this.lift.n_k,this.lift.v_k);
+  //console.log("Lift_data",this.lift.n_k,this.lift.v_k);
   this.najvisi=this.lift.n_k;
   this.najnizi!=this.lift.v_k;
-  console.log("Katovi",this.najnizi,this.najvisi)
+  //console.log("Katovi",this.najnizi,this.najvisi)
   //let lista_katova: number[]=[];
   this.data3=[];
  // if(this.najvisi!=undefined && this.najnizi!=undefined){
@@ -374,7 +390,7 @@ if(this.TravelData.length!=0 && this.TravelData!=undefined && this.TravelData!=n
       this.data3.push(0);
 
     }
-    console.log("lista katova",lista_katova);
+    //console.log("lista katova",lista_katova);
     
     this.barChartLabels3=[]
 
@@ -387,7 +403,7 @@ if(this.TravelData.length!=0 && this.TravelData!=undefined && this.TravelData!=n
       this.data5.push(0);
 
     }
-    console.log("Podaci",this.barChartLabels3);
+    //console.log("Podaci",this.barChartLabels3);
 
   //}
 }

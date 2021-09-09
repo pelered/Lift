@@ -22,7 +22,8 @@
 
                 <mat-form-field class="example-form-field" appearance="fill" *ngIf="is_edit[i]==true;else content">
                   <mat-label>Naziv</mat-label>
-                  <input matInput type="text" [formControl]="zgradaFormControl"  [(ngModel)]="value">
+                  <input matInput type="text" [formControl]="zgradaFormControl"  [(ngModel)]="value"
+                  (input)="checkZg(value,element.key)">
                   <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
                     <mat-icon>close</mat-icon>
                   </button>                
@@ -46,7 +47,8 @@
                 <mat-form-field class="example-form-field" appearance="fill" 
                 *ngIf="is_edit[i]==true && getSpecificPodZg(element.key).length;else contentpod">
                   <mat-label>Naziv</mat-label>
-                  <input matInput type="text" [formControl]="podzgradaFormControl"  [(ngModel)]="value2" (input)="check(value2,getSpecificPodZg(element.key))">
+                  <input matInput type="text" [formControl]="podzgradaFormControl"  [(ngModel)]="value2"
+                   (input)="check(value2,getSpecificPodZg(element.key))">
                   <button *ngIf="value2" matSuffix mat-icon-button aria-label="Clear" (click)="value2=''">
                     <mat-icon>close</mat-icon>
                   </button>                
@@ -101,7 +103,7 @@
              
 
               <button mat-raised-button   class="push-right" 
-              [disabled]="value ==='' || value2 ===''||isti_naziv "
+              [disabled]="value ==='' || value2 ===''|| isti_naziv "
               (click)=saveZgrada(element.key,element.ime,i,is_selected[i]) 
               *ngIf="is_edit[i]==true">Save</button>
              

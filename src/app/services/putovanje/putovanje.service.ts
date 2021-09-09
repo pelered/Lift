@@ -85,7 +85,12 @@ export class PutovanjeService {
   delete(key: string): Promise<void> {
     return this.putoRef.remove(key);
   }
-
+  deleteMj(key: string): Promise<void> {
+    return this.mjeriRef.remove(key);
+  }
+  deleteStanje(key: string): Promise<void> {
+    return this.stateRef.remove(key);
+  }
   deleteAll(): Promise<void> {
     return this.putoRef.remove();
   }

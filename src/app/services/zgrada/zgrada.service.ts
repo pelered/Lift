@@ -17,19 +17,73 @@ export class ZgradaService {
   podzgradaRef: AngularFireList<Zgrada>;
 
 
+  zgQ$: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
 
+  sizeZg$: BehaviorSubject<string|null>;
+
+  PodZgQ$: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
+
+  sizePod$: BehaviorSubject<string|null>;
+
+
+  zgradeQ$: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
+
+  sizeZgrade$: BehaviorSubject<string|null>;
+
+  PodZgradeQ$: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
+
+  sizePodzgrade$: BehaviorSubject<string|null>;
   constructor(private db: AngularFireDatabase) { 
     this.zgradaRef = db.list(this.dbPathZg);
-    this.podzgradaRef=db.list(this.dbPathPodZg);
-
-   
+    this.podzgradaRef=db.list(this.dbPathPodZg);  
+    this.sizeZg$ = new BehaviorSubject<string|null>(null);
+    this.zgQ$ = this.sizeZg$.pipe(switchMap((zg_key) => 
+         db.list(this.dbPathZg, ref => 
+         zg_key ? ref.orderByKey().equalTo(zg_key):ref
+         ).snapshotChanges()));
   
+    this.sizePod$ = new BehaviorSubject<string|null>(null);
+    this.PodZgQ$ = this.sizePod$.pipe(switchMap((pod_key) => 
+          db.list(this.dbPathPodZg, ref => 
+          pod_key ? ref.orderByKey().equalTo(pod_key):ref
+          ).snapshotChanges()));
+       
 
+    this.sizeZgrade$ = new BehaviorSubject<string|null>(null);
+    this.zgradeQ$ = this.sizeZgrade$.pipe(switchMap((user_key) => 
+         db.list(this.dbPathZg, ref => 
+         user_key ? ref.orderByChild("u_uid").equalTo(user_key):ref
+         ).snapshotChanges()));
+  
+    this.sizePodzgrade$ = new BehaviorSubject<string|null>(null);
+    this.PodZgradeQ$ = this.sizePodzgrade$.pipe(switchMap((user_k) => 
+          db.list(this.dbPathPodZg, ref => 
+          user_k ? ref.orderByChild("u_uid").equalTo(user_k):ref
+          ).snapshotChanges()));
+       
+     
   }
   
-    
-
-  
+  getZgQuery(key:string){
+    console.log("Ispis5Zg",key);
+    this.sizeZg$.next(key);    
+    return this.zgQ$;
+  }
+  getPodQuery(key:string){
+    console.log("Ispis5Pod",key);
+    this.sizePod$.next(key);    
+    return this.PodZgQ$;
+  }
+  getZgradeQuery(key:string){
+    console.log("Ispis5Zgrade",key);
+    this.sizeZgrade$.next(key);    
+    return this.zgradeQ$;
+  }
+  getPodzgradeQuery(key:string){
+    console.log("Ispis5Podzgrade",key);
+    this.sizePodzgrade$.next(key);    
+    return this.PodZgradeQ$;
+  }
   
   getAllZgrade(): AngularFireList<Zgrada> {
   

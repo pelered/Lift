@@ -56,9 +56,12 @@ export class IspisZgradaComponent implements OnInit {
   is_selected:string[]=[];
   is_selected_ob:string[]=[];
 
-  size$: BehaviorSubject<string|null>;
   travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
   isti_naziv!:boolean;
+  zgrade$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
+  podzgrade$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
+
+  
 
   broj!:number;
 
@@ -101,7 +104,6 @@ export class IspisZgradaComponent implements OnInit {
     this.is_selected=[];
 
     this.edit=false;
-    this.size$ = new BehaviorSubject<string|null>(null);   
     this.isti_naziv=false;
 
     }
@@ -131,6 +133,59 @@ export class IspisZgradaComponent implements OnInit {
 
     this.is_edit=[];
 
+    /*this.zgrade$=this.zgrada_service.getZgradeQuery(this.userData.uid);
+    this.podzgrade$=this.zgrada_service.getPodzgradeQuery(this.userData.uid);
+
+
+    this.podzgrade$.forEach((data) =>{
+      this.PodZgrada=[];
+
+
+      console.log("Podzgrada",data.values)
+      data.forEach((ele)=> { 
+        console.log("Podzgrada",ele.payload.val())
+
+        this.PodZgrada.push(ele.payload.val() as Zgrada);
+     })  
+    }); 
+    this.zgrade$.forEach((data) =>{
+      this.LiftData=[];
+      this.is_selected=[];
+      this.is_save=[];
+      this.is_edit=[];
+
+      data.forEach((ele)=> { 
+        console.log("Zgrade",ele.payload.val())
+
+        this.LiftData.push(ele.payload.val() as Zgrada)
+
+        this.is_edit.push(false);
+        this.is_save.push(false);
+     })  
+
+     this.LiftData.forEach((el:any) => {        
+      if(el.podzg!=undefined){
+        //nece raditi ako nisu zaredom s selectom
+        this.is_selected.push(el.podzg[0]);
+      }else{
+        this.is_selected.push("");
+      }
+    });
+    //this.zgrade = data;
+
+   // console.log("Is_selected",this.is_selected);
+    //console.log("Is_edit",this.is_edit);
+   //console.log("Zgrada:",this.LiftData);
+   //console.log("Podzgrada:",this.PodZgrada);
+   //console.log("Sve zgrade:",this.zgrade);
+      this.dataSource = new MatTableDataSource(this.LiftData);
+      console.log("Datas",this.LiftData);
+
+      setTimeout(() => this.dataSource.paginator = this.paginator);
+    }); 
+*/
+    
+
     this.zgrada_service.getAllPodZg().snapshotChanges().pipe(
       map(changes =>
         changes.map(c =>
@@ -147,7 +202,8 @@ export class IspisZgradaComponent implements OnInit {
       data.forEach(items => {
         
         if(items.u_uid==this.userData.uid){    
-          this.PodZgrada.push(items as Zgrada);          
+          this.PodZgrada.push(items as Zgrada); 
+          console.log("Pod",items)         
           //this.is_edit.push(false);     
         }
       })
@@ -191,17 +247,10 @@ export class IspisZgradaComponent implements OnInit {
       });
       this.zgrade = data;
 
-     // console.log("Is_selected",this.is_selected);
-      //console.log("Is_edit",this.is_edit);
-     //console.log("Zgrada:",this.LiftData);
-     //console.log("Podzgrada:",this.PodZgrada);
-     //console.log("Sve zgrade:",this.zgrade);
+
         this.dataSource = new MatTableDataSource(this.LiftData);
         console.log("Datas",this.LiftData);
-        /*setTimeout(() => {
-          //this.dataSource.sort = this.sort;
-          this.dataSource.paginator = this.paginator;
-        }, 1000);*/
+
         setTimeout(() => this.dataSource.paginator = this.paginator);
 
     });
@@ -287,6 +336,20 @@ export class IspisZgradaComponent implements OnInit {
    } 
     
   }
+  checkZg(ime:any,podzg:any):void{
+    console.log("",ime,podzg);
+    for(let el of this.LiftData){
+      if(el.ime==ime && el.key!=podzg){
+        this.isti_naziv=true;
+        break;
+      }else{
+        this.isti_naziv=false;
+      }
+    }
+  
+
+    
+  }
   saveZgrada(zgrada_key:string,naziv:string,i:number,pod:string):void{
     this.is_edit[i]=false;
     this.is_save[i]=false;
@@ -370,18 +433,21 @@ export class IspisZgradaComponent implements OnInit {
     if(this.broj<this.listLifts.length){
       this.travels$=this.voznja_service.getListPutovanjaQuery(this.listLifts[this.broj]);
       this.travels$.forEach((data) =>{
-        //console.log("Voznja",data)
-        data.forEach((ele)=> { 
-          this.voznja_service.delete(ele.payload.key!);
-          //delete voznju kako ju nades
-          //this.listVoznji.push(ele.payload.key);
-       })  
+        console.log("Voznja",data.length)
+        if(data.length!=0){
+          data.forEach((ele)=> { 
+            console.log("Voznja")
+            this.voznja_service.delete(ele.payload.key!);
+            //delete voznju kako ju nades
+            this.listVoznji.push(ele.payload.key);
+         })  
+        }
+        
       }); 
-
       
       this.subscription = source.subscribe(val => {
          // do stuff you want when the interval ticks
-         //console.log("Tik",val);
+         console.log("Tik",val);
          if(val==2){
            this.stopTimer();
            this.broj++;
@@ -391,12 +457,17 @@ export class IspisZgradaComponent implements OnInit {
     }else if(this.broj==this.listLifts.length){
       if(this.listLifts!=undefined){
         this.listLifts.forEach((element: string) => {
-          this.lift_service.delete(element);        
+          this.lift_service.delete(element);
+          this.voznja_service.updateMjeri(element,false);  
+          this.voznja_service.deleteStanje(element);
+          this.voznja_service.deleteMj(element);
+
+               
         });
       }
      
       if(this.podzg!=null ){
-       // console.log("Tu brisem podzgradu",this.zg,this.zgrada_cijela.podzg,this.podzg);
+        console.log("Tu brisem podzgradu",this.zg,this.zgrada_cijela.podzg,this.podzg);
         if(this.zgrada_cijela.podzg==undefined || this.zgrada_cijela.podzg==null ||this.zgrada_cijela.podzg.length==0){
           this.zgrada_service.delete(this.zg);
 
@@ -425,11 +496,11 @@ export class IspisZgradaComponent implements OnInit {
 
 
       }else if(this.podzg==null){
-        //console.log("Ako nema podzg")
+        console.log("Ako nema podzg",this.zg)
         this.zgrada_service.delete(this.zg);
       }
     }else if(this.listLifts.length==undefined){
-      //console.log("AKo ne postojji listLifts");
+      console.log("AKo ne postojji listLifts",this.zgrada_cijela,this.podzg);
       this.zgrada_service.update(this.zg,this.zgrada_cijela);
       this.zgrada_service.deletePod(this.podzg);        
 
@@ -473,7 +544,6 @@ export class IspisZgradaComponent implements OnInit {
     //console.log("Delete:",key_zg);
     //console.log("Del0:",this.listLifts.length);
     this.zg=key_zg;
-
     this.broj=0;
     this.startTimer();   
 
