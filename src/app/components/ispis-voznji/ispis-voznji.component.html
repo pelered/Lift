@@ -204,6 +204,33 @@
        file_download
        </span></mat-icon></button>
     </mat-tab>
+    <mat-tab label="Histogram-promet tijekom dana">
+      <div style="padding-top: 10px;">
+        <mat-form-field >
+          <mat-label>Dan</mat-label>
+          <mat-select [(ngModel)]="selectedValue" name="danutj" (selectionChange)="changeDay($event)">
+            <mat-option *ngFor="let day of days" [value]="day">
+              {{day}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="div-graphs"   [hidden]="!(TravelData.length > 0)">
+        <canvas id="dan" baseChart 
+          [datasets]="barChartData3"
+          [labels]="barChartLabels3"
+          [options]="barChartOptions3"
+          [plugins]="barChartPlugins3"
+          [legend]="barChartLegend3"
+          [chartType]="barChartType3"
+          [colors]="colors">
+        </canvas>
+      </div>
+      <button  class ="topcorner" mat-stroked-button  (click)="Skini('dan')" ><mat-icon aria-hidden="false"
+        class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+       file_download
+       </span></mat-icon></button>
+    </mat-tab>
   </mat-tab-group>
 
 </div>
@@ -225,6 +252,6 @@
   
  </div>
  
-  
+ 
 
   

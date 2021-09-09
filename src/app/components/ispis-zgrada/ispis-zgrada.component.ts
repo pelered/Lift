@@ -208,22 +208,7 @@ export class IspisZgradaComponent implements OnInit {
 
   }
 
-  /*getPodzg(pod_id:String){
-     
-    this.PodZgrada.forEach((element: any) => {
-      if(element.key==pod_id){
-      //this.SpecificPodZg.push(element);
-      //console.log("Podzgrada-selected:",element);
-      this.is_selected_ob.push(element);
-      this.privremeni=element;
 
-     }else{
-      //this.is_selected_ob.push("");
-     }
-     return this.privremeni;
-
-    });
-  }*/
   Dialog(key_zg:string,key_pod:string): void {
 
     this.dialogo
@@ -313,9 +298,7 @@ export class IspisZgradaComponent implements OnInit {
     //todo edit gumb nestaje ako se samo podz promjeni naziv
 
   }
-  onPaginateChange(event: any){
-    console.log("Event",event)
-  }
+
   
   removeZgrada_Pod(key_zg:string,key_podzg:string):void{
     //console.log("Delete:",key_podzg,key_zg);
@@ -504,7 +487,63 @@ export class IspisZgradaComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+    var filteredData = this.dataSource.filteredData;
+
+    this.is_selected=[];
+    this.is_save=[];
+    this.is_edit=[];
+      //console.log("Zgrade:",data);
+
+    var filteredData = this.dataSource.filteredData;
+    filteredData.forEach(item => {
+          //todo izmjeniti da je query a ne da ih sve dohvati
+      if(item.u_uid==this.userData.uid){     
+
+        this.is_edit.push(false);
+        this.is_save.push(false);
+        if(item.podzg!=undefined){
+            //nece raditi ako nisu zaredom s selectom
+
+          this.is_selected.push(item.podzg![0].valueOf());
+        }else{
+          this.is_selected.push("");
+        }
+            
+      }
+    })
+     
   }
 
+  onPaginateChange(event: any){
+    const skip = this.paginator.pageSize * this.paginator.pageIndex;
+   const paged = this.LiftData.filter((u: any, i: number) => i >= skip)
+   .filter((u: any, i: number) => i <this.paginator.pageSize);
+   //console.log("Paged:",paged);
 
+
+   this.is_selected=[];
+    this.is_save=[];
+    this.is_edit=[];
+      //console.log("Zgrade:",data);
+
+    //var filteredData = this.dataSource.filteredData;
+    paged.forEach((item: { u_uid: string; podzg: undefined; }) => {
+          //todo izmjeniti da je query a ne da ih sve dohvati
+      if(item.u_uid==this.userData.uid){     
+
+        this.is_edit.push(false);
+        this.is_save.push(false);
+        if(item.podzg!=undefined){
+            //nece raditi ako nisu zaredom s selectom
+
+          this.is_selected.push(item.podzg![0]);
+        }else{
+          this.is_selected.push("");
+        }
+            
+      }
+    })
+    //console.log("Event",event)
+    //console.log("Datapage",this.dataSource.paginator)
+  }
 }
