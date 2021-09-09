@@ -314,15 +314,9 @@ export class IspisLiftovaComponent implements OnInit {
     
     this.lift_service.delete(lift);
     this.voznja_service.updateMjeri(lift,false);  
-    this.voznja_service.deleteStanje(lift);
-    this.voznja_service.deleteMj(lift);
-    /*if(this.podzg.lifts==null || this.podzg.lifts==undefined){
-      const index = this.zgrada.podzg!.indexOf(this.lift, 0);
-        //console.log("Zgradaprije2",index)
-        if (index > -1) {
-          element.podzg.splice(index, 1);
-        }   
-    }*/
+    //this.voznja_service.deleteStanje(lift);
+    //this.voznja_service.deleteMj(lift);
+
     })
     
 

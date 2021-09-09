@@ -28,12 +28,17 @@
 <div>
   <mat-tab-group animationDuration="0ms">
     <mat-tab label="Tablica">
+
       <div [hidden]="!(TravelData.length > 0)">
+
         <mat-form-field appearance="standard" >
           <mat-label>Filter</mat-label>
           <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Lift" #input>
         </mat-form-field>
         </div>
+        
+                       <!--
+
         <div  [hidden]="!(TravelData.length > 0)" >
         <form [formGroup]="filterForm" >
             <mat-form-field class="example-form-field1"  >
@@ -64,6 +69,7 @@
            <button mat-button color="primary" (click)="applyFilterDate()">Pretraži</button>
         </form>
         </div>
+      -->
         <div class="topcorner" *ngIf="lift_state && prikazi" >
           <div style="float: left;">
             <p><b>Stanje lifta:</b> {{lift_state.state}} </p>
@@ -78,15 +84,19 @@
 
           </div>
           
-         
+        
         </div>
+
         <div class="container" [hidden]="!(TravelData.length > 0)"  >
+                        <!--
+
           <div style="float:right;">
             <button mat-raised-button (click)="exporter.exportTable('xlsx', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
             <button mat-raised-button (click)="exporter.exportTable('csv')">Csv</button>
             <button mat-raised-button (click)="exporter.exportTable('json')">Json</button>
             <button mat-raised-button (click)="exporter.exportTable('txt')">Txt</button>
           </div>
+        -->
               <div class="mat-elevation-z8">
                 <table mat-table  matTableExporter #exporter="matTableExporter" [dataSource]="dataSource" matSort >
                       

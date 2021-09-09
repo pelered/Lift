@@ -5,11 +5,13 @@
     <mat-divider fxFlex="1 0"></mat-divider>
 
   </div>
+                 <!--
+
   <mat-form-field appearance="standard">
     <mat-label>Filter</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Zgrada" #input>
   </mat-form-field>
-
+-->
     <!-- Books list Angular material data table -->
     <div class="container"  [hidden]="LiftData.length == 0" >
         <div class="mat-elevation-z8">
@@ -91,7 +93,7 @@
                  [routerLink]="['/ispis-liftova/',element.key]"
 
               -->
-               
+               <!--
               <button mat-raised-button 
                (click)=editZgrada(element.key,element.ime,i,is_selected[i]) class="push-right" 
                 [disabled]=" is_selected[i]==undefined || edit"  
@@ -101,7 +103,7 @@
               class="push-right"  *ngIf="is_edit[i]==false && !getSpecificPodZg(element.key).length" 
               [disabled]="edit">Edit</button>
              
-
+-->
               <button mat-raised-button   class="push-right" 
               [disabled]="value ==='' || value2 ===''|| isti_naziv "
               (click)=saveZgrada(element.key,element.ime,i,is_selected[i]) 

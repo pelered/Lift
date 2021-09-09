@@ -71,10 +71,12 @@
                 <button mat-raised-button color="primary" class="push-right"
                 [routerLink]="['/ispis-voznji/',element.key]" [state]="{ data:element,data1:zgrada,data2:podzg}"
                   >Open</button>
-              
+                             <!--
+
                 <button mat-raised-button color="red" (click)=editLift(element.key,element.ime,i) 
                 class="push-right" *ngIf="is_edit[i]==false"
                 [disabled]=" edit" >Edit</button>
+                             -->
                 <button mat-raised-button color="red"  class="push-right" 
                 (click)=saveLift(element.key,element.ime,i) *ngIf="is_edit[i]==true"
                 [disabled]="isti_naziv || value ===''">Save</button>
