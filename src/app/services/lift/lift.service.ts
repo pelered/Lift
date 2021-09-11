@@ -23,21 +23,18 @@ export class LiftService {
   liftoviPod$: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
   constructor(private db: AngularFireDatabase) { 
     this.liftRef = db.list(this.dbPathLift);
-    //konkretan lift po idu lifta
     this.size$ = new BehaviorSubject<string|null>(null);
     this.items$ = this.size$.pipe(switchMap((id_lift) => 
          db.list(this.dbPathLift, ref => 
          id_lift ? ref.orderByKey().equalTo(id_lift):ref
          ).snapshotChanges()));
 
-         //liftove iz odredene zgrade
     this.sizeLift$ = new BehaviorSubject<string|null>(null);
     this.liftovi$ = this.size$.pipe(switchMap((id_zg) => 
          db.list(this.dbPathLift, ref => 
          id_zg ? ref.orderByChild("zgrada").equalTo(id_zg):ref
          ).snapshotChanges()));
 
-         //liftovi iz određene podzgrade
     this.sizeLiftPod$ = new BehaviorSubject<string|null>(null);
     this.liftoviPod$ = this.size$.pipe(switchMap((id_pod) => 
          db.list(this.dbPathLift, ref => 

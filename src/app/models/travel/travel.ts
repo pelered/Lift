@@ -1,6 +1,5 @@
-import { DatePipe } from "@angular/common";
 
-export interface Voznja {
+export interface Travel {
     count_p?: number;
     end_time?:Date;
     n_k?: number;

@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { AngularFireModule }  from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from '../environments/environment';
-import {Lift} from './models/lift.model';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -59,7 +58,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule,
     
   ],
-  providers: [Lift,AuthService],
+  providers: [AuthService],
   bootstrap: [AppComponent],
   entryComponents: [
     DialogoConfirmacionComponent// <--- Aquí
