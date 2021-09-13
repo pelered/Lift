@@ -2,22 +2,26 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import { ignoreElements, map } from 'rxjs/operators';
 import { MatPaginator} from '@angular/material/paginator';
 import {  MatTableDataSource } from '@angular/material/table';
-import { Voznja } from '../../models/voznja/voznja';
+import { Travel } from '../../models/voznja/voznja';
 import { ActivatedRoute } from '@angular/router';
 import { PutovanjeService } from '../../services/putovanje/putovanje.service';
 import {MatSort, Sort} from '@angular/material/sort';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { Zgrada } from 'src/app/models/zgrada/zgrada';
+import { Building } from 'src/app/models/zgrada/zgrada';
 import { LiftState } from 'src/app/models/lift/lift-state';
 import { Observable } from 'rxjs';
 import { AngularFireAction } from '@angular/fire/database';
 import firebase from 'firebase';
-import { LiftMjeri } from 'src/app/models/lift/lift-mjeri';
+import { LiftMeasure } from 'src/app/models/lift/lift-mjeri';
 import { Lift } from 'src/app/models/lift/lift';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
 import { Colors, Label } from 'ng2-charts';
 import { LiftService } from 'src/app/services/lift/lift.service';
+interface Dani {
+  value: string;
+  viewValue: string;
+}
 @Component({
   selector: 'app-ispis-voznji',
   templateUrl: './ispis-voznji.component.html',
@@ -25,18 +29,18 @@ import { LiftService } from 'src/app/services/lift/lift.service';
 })
 export class IspisVoznjiComponent implements OnInit {
 
-  zgrada!: Zgrada;
-  podzg!: Zgrada;
+  zgrada!: Building;
+  podzg!: Building;
   lift!: Lift;
   lift_state!:LiftState;
   stanje!:String;
-  mjeri_state!:LiftMjeri;
+  mjeri_state!:LiftMeasure;
   prikazi!:boolean;
   
   id !:string;
   TravelData: any = [];
   LiftState :any;
-  dataSource!: MatTableDataSource<Voznja>;
+  dataSource!: MatTableDataSource<Travel>;
   @ViewChild(MatPaginator,{static: true})
   paginator!: MatPaginator;
   isLoading = true;
@@ -76,6 +80,7 @@ export class IspisVoznjiComponent implements OnInit {
     animation: {
       duration: 0 // general animation time
     },
+    
     hover: {
       animationDuration: 0 // duration of animations when hovering an item
     },
@@ -90,8 +95,7 @@ export class IspisVoznjiComponent implements OnInit {
 
   
 
-  public barChartLabels: Label[] = ['Pon', 'Uto', 'Sri', 'Cet', 'Pet', 'Sub', 'Ned'];
-  public barChartType: ChartType = 'bar';
+  public barChartLabels: Label[] = ['Ponedjeljak', 'Utorak', 'Srijeda', 'Cetvrtak', 'Petak', 'Subota', 'Nedjelja'];  public barChartType: ChartType = 'bar';
   public barChartLegend = true;
   public barChartPlugins = [];
   public colors: Colors[] = [
@@ -124,7 +128,7 @@ public barChartOptions1: ChartOptions = {
       }
     }
 };
-public barChartLabels1: Label[] = ['Pon', 'Uto', 'Sri', 'Cet', 'Pet', 'Sub', 'Ned'];
+public barChartLabels1: Label[] = ['Ponedjeljak', 'Utorak', 'Srijeda', 'Cetvrtak', 'Petak', 'Subota', 'Nedjelja'];
 public barChartType1: ChartType = 'bar';
 public barChartLegend1 = true;
 public barChartPlugins1 = [];
@@ -188,8 +192,16 @@ public barChartData3: ChartDataSets[] = [
 ];
 data4: Array<number> =[]
 data5: Array<number> =[]
+days :Dani[]=[
+  {value:'Monday',viewValue:"Ponedjeljak"},
+  {value:'Tuesday',viewValue:"Utorak"},
+  {value:'Wednesday',viewValue:"Srijeda"},
+  {value:'Thursday',viewValue:"Četvrtak"},
+  {value:'Friday',viewValue:"Petak"},
+  {value:'Saturday',viewValue:"Subota"},
+  {value:'Sunday',viewValue:"Nedjelja"}
+]
 
-days :Array<string>=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 selectedValue: string='Monday';
 najnizi!:number;
 najvisi!:number| undefined;
@@ -348,7 +360,7 @@ travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
     this.travels$.forEach(data =>{
       this.TravelData=[];
          data.forEach((ele)=> { 
-          this.TravelData.push(ele.payload.val() as Voznja)
+          this.TravelData.push(ele.payload.val() as Travel)
         })
         if(data.length==0){
           //console.log("Vrtim1");
