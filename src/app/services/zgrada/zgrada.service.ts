@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Zgrada } from 'src/app/models/zgrada/zgrada';
+import { Building } from 'src/app/models/zgrada/zgrada';
 //import { Zgrada } from 'src/app/models/zgrada/zgrada.model';
 import { AngularFireAction, AngularFireDatabase, AngularFireList } from '@angular/fire/database';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -13,8 +13,8 @@ export class ZgradaService {
   private dbPathZg = '/Projekti/Zgrade';
   private dbPathPodZg = '/Projekti/Podzgrade';
 
-  zgradaRef: AngularFireList<Zgrada>;
-  podzgradaRef: AngularFireList<Zgrada>;
+  zgradaRef: AngularFireList<Building>;
+  podzgradaRef: AngularFireList<Building>;
 
 
   zgQ$: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
@@ -65,37 +65,33 @@ export class ZgradaService {
   }
   
   getZgQuery(key:string){
-    console.log("Ispis5Zg",key);
     this.sizeZg$.next(key);    
     return this.zgQ$;
   }
   getPodQuery(key:string){
-    console.log("Ispis5Pod",key);
     this.sizePod$.next(key);    
     return this.PodZgQ$;
   }
   getZgradeQuery(key:string){
-    console.log("Ispis5Zgrade",key);
     this.sizeZgrade$.next(key);    
     return this.zgradeQ$;
   }
   getPodzgradeQuery(key:string){
-    console.log("Ispis5Podzgrade",key);
     this.sizePodzgrade$.next(key);    
     return this.PodZgradeQ$;
   }
   
-  getAllZgrade(): AngularFireList<Zgrada> {
+  getAllZgrade(): AngularFireList<Building> {
   
     
  
     return this.zgradaRef;
   }
-  getAllPodZg(): AngularFireList<Zgrada>{
+  getAllPodZg(): AngularFireList<Building>{
     return this.podzgradaRef;
 
   }
-  create(zgrada: Zgrada): any {
+  create(zgrada: Building): any {
     return this.zgradaRef.push(zgrada);
   }
   updateZgLifts(key:string, value: String[]): Promise<void> {

@@ -46,17 +46,14 @@ export class LiftService {
 
   }
   getLiftQuery(key:string){
-    console.log("Ispis5Lift",key);
     this.size$.next(key);    
     return this.items$;
   }
   getLiftZg(key:string){
-    console.log("Ispis5Lift",key);
     this.sizeLift$.next(key);    
     return this.liftovi$;
   }
   getLiftPod(key:string){
-    console.log("Ispis5Lift",key);
     this.sizeLiftPod$.next(key);    
     return this.liftoviPod$;
   }

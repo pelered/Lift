@@ -6,7 +6,7 @@ import { MatPaginator} from '@angular/material/paginator';
 import {  MatTableDataSource } from '@angular/material/table';
 import { User } from 'src/app/models/user';
 import { Lift } from 'src/app/models/lift/lift';
-import { Zgrada } from 'src/app/models/zgrada/zgrada';
+import { Building } from 'src/app/models/zgrada/zgrada';
 
 
 import { AngularFireAction } from '@angular/fire/database';
@@ -24,9 +24,9 @@ import { DialogoConfirmacionComponent } from 'src/app/dialog/dialogo-confirmacio
   styleUrls: ['./ispis-liftova.component.css']
 })
 export class IspisLiftovaComponent implements OnInit {
-  zgrada!: Zgrada;
-  zgrada2!:Zgrada;
-  podzg!: Zgrada;
+  zgrada!: Building;
+  zgrada2!:Building;
+  podzg!: Building;
   LiftData: any = [];
   id :string|null;
   liftovi?:Lift[];
@@ -46,7 +46,6 @@ export class IspisLiftovaComponent implements OnInit {
   isti_naziv!:boolean;
   cijelaZgrada:any=[]
   cijelaPod:any=[];
-  //size$: BehaviorSubject<string|null>;
   travels$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
   pod$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
   zg$!: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
@@ -77,7 +76,6 @@ export class IspisLiftovaComponent implements OnInit {
             localStorage.setItem("Pod",JSON.stringify(this.podzg));
           })
           })
-        console.log("Historydata",history.state)
       
     }
     if(history.state.data!=undefined){
@@ -111,10 +109,8 @@ export class IspisLiftovaComponent implements OnInit {
       .subscribe((confirm: Boolean) => {
         if (confirm) {
           this.removeLift(key);
-         // alert("Brisanje");
 
         } else {
-          //alert("Odustali ste");
         }
       });
   }
@@ -130,38 +126,28 @@ export class IspisLiftovaComponent implements OnInit {
   setValues():void{
     if(history.state.data!=undefined){
 
-      //dosli s druge stranice
       if(localStorage.getItem("Zgrada")!="undefined" ){
-        //postoje podaci vec neki o zgradi nekoj
         if(history.state.data.key==JSON.parse(localStorage.getItem("Zgrada")!).key){
-          //zgrada nova ista kao zapisana,spremamo nju
           var retrievedObject:any=localStorage.getItem("Zgrada");
           this.zgrada=JSON.parse(retrievedObject);          
         }else{
-          //nova zgrada ,zapisujemo ju
           this.zgrada=history.state.data;
           localStorage.setItem("Zgrada",JSON.stringify(this.zgrada));
         }
       }else{
-        //ne postoji zapis, zapisujemo ju
         this.zgrada=history.state.data;
         localStorage.setItem("Zgrada",JSON.stringify(this.zgrada));
       }
     }else{
-      //refresh se dogodio
       var retrievedObject:any=localStorage.getItem("Zgrada");
       this.zgrada=JSON.parse(retrievedObject);
     }
     
     if(history.state.data!=undefined &&history.state.data2!=undefined){
-      //dosli smo s prethodne stranice
       if(localStorage.getItem("Pod")!=null){
-        //postoji zapis u local storage
         if(history.state.data1==JSON.parse(localStorage.getItem("Pod")!).key){
-          //dobiveni podatak je jednak onom u local storage,prekopiraj ga
           this.podzg=JSON.parse(localStorage.getItem("Pod")!);
         }else{
-          //dobiveni podatak nije isti onom u local storage
           history.state.data2.forEach((el:any) => {
             if(el.key==history.state.data1){
               this.podzg=el;
@@ -170,7 +156,6 @@ export class IspisLiftovaComponent implements OnInit {
           });
         }
       }else{
-        //ne postoji zapis u local storage
         history.state.data2.forEach((el:any) => {
           if(el.key==history.state.data1){
             this.podzg=el;
@@ -179,20 +164,18 @@ export class IspisLiftovaComponent implements OnInit {
         });
       }
     }else if(history.state.data!=undefined &&history.state.data2==undefined){      
-      // ne postoji podzgrada
       if(localStorage.getItem("Pod")!=null){
         localStorage.removeItem("Pod");
       }     
     }else{
-       //ako nema nijednoga onda je refresh  
        this.podzg=JSON.parse(localStorage.getItem("Pod")!);
     }
+
 
   }
  
   retrieveLifts(): void {  
     
-    //this.lift_service.getLiftQuery(this.id)
      
     this.lift_service.getAllLift().snapshotChanges().pipe(
       map(changes =>
@@ -207,13 +190,11 @@ export class IspisLiftovaComponent implements OnInit {
       this.is_edit=[];
       data.forEach(item => {
                 
-        //todo izmjeniti da je query a ne da ih sve dohvati
         if(item.pod_zg==this.id || item.zgrada==this.id){    
           this.LiftData.push(item as Lift);
           this.is_edit.push(false);
         }
       })     
-      console.log("Liftovisvi",this.LiftData)
   
 
       this.liftovi != data;     
@@ -222,8 +203,7 @@ export class IspisLiftovaComponent implements OnInit {
           this.dataSource.paginator = this.paginator;
         }, 0);
     });
-    console.log("Zg",this.zgrada);
-    console.log("Pod",this.podzg);
+  
   }
 
   editLift(lift_key:string,ime:string,i:number):void{
@@ -245,10 +225,8 @@ export class IspisLiftovaComponent implements OnInit {
     for(let a of this.LiftData) {
       if(a.ime==ime &&a.key!=key) {
         this.isti_naziv=true;
-        //console.log("Postoji lift s tim nazivom",this.isti_naziv)
         break;
       }else{
-        //console.log("Ne Postoji lift s tim nazivom",this.isti_naziv)
         this.isti_naziv=false;
       }
    } 
@@ -256,24 +234,16 @@ export class IspisLiftovaComponent implements OnInit {
   }
 
   removeLift(lift:any):void{
-    //todo da makne iz liste onoga kojega smo izbrisali
-    //this.is_edit.pop;
+
     var liftobject:Lift;
-    console.log("Liftovi",this.LiftData);
     this.LiftData.forEach((element:any) => {
-      console.log("Element",element);
 
       if(element.key==lift){
         this.liftDelete=element;
         liftobject=element.value;
-        console.log("Element1",element);
-        console.log("Lift",this.liftDelete)
-
-
       }
     });
 
-    console.log("Liftkey",lift);
     const index = this.zgrada.lifts!.indexOf(lift, 0);
     if (index > -1) {
       this.zgrada.lifts!.splice(index, 1);
@@ -287,26 +257,20 @@ export class IspisLiftovaComponent implements OnInit {
     }
      
 
-    console.log("Zg",this.zgrada);
-    console.log("Pod",this.podzg);
-
-
-    console.log("Lift_delete",lift)
     this.travels$=this.voznja_service.getListPutovanjaQuery(lift);
     this.travels$.forEach(data =>{
       if(data.length!=0){
         data.forEach((ele)=> { 
-          console.log("Travel",ele)
           this.voznja_service.delete(ele.payload.key!);
        })
       }
-      console.log("Tu",this.liftDelete.pod_zg)
     //    
     this.zgrada_service.update(this.liftDelete.zgrada!,this.zgrada);
     localStorage.setItem("Zgrada",JSON.stringify(this.zgrada))
 
     if(this.liftDelete.pod_zg!=undefined && this.liftDelete.pod_zg!=null){
-      console.log("Obrisao pod")
+
+
      this.zgrada_service.updateP(this.liftDelete.pod_zg,this.podzg);
      localStorage.setItem("Pod",JSON.stringify(this.podzg))
 
@@ -316,13 +280,7 @@ export class IspisLiftovaComponent implements OnInit {
     this.voznja_service.updateMjeri(lift,false);  
     this.voznja_service.deleteStanje(lift);
     this.voznja_service.deleteMj(lift);
-    /*if(this.podzg.lifts==null || this.podzg.lifts==undefined){
-      const index = this.zgrada.podzg!.indexOf(this.lift, 0);
-        //console.log("Zgradaprije2",index)
-        if (index > -1) {
-          element.podzg.splice(index, 1);
-        }   
-    }*/
+
     })
     
 

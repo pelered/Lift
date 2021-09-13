@@ -62,7 +62,7 @@ import { MatButtonModule } from '@angular/material/button';
   providers: [Lift,AuthService],
   bootstrap: [AppComponent],
   entryComponents: [
-    DialogoConfirmacionComponent// <--- Aquí
+    DialogoConfirmacionComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase, AngularFireList,AngularFireAction ,AngularFireObject,QueryFn } from '@angular/fire/database';
 import { LiftState } from 'src/app/models/lift/lift-state';
-import {  Voznja } from 'src/app/models/voznja/voznja';
+import {  Travel } from 'src/app/models/voznja/voznja';
 
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import firebase from 'firebase';
-import { LiftMjeri } from 'src/app/models/lift/lift-mjeri';
+import { LiftMeasure } from 'src/app/models/lift/lift-mjeri';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,9 +16,9 @@ export class PutovanjeService {
   private dbPathLiftMjeri='/Mjeri';
 
 
-  putoRef: AngularFireList<Voznja>;
+  putoRef: AngularFireList<Travel>;
   stateRef: AngularFireList<LiftState>;
-  mjeriRef:AngularFireList<LiftMjeri>
+  mjeriRef:AngularFireList<LiftMeasure>
   //
   items$: Observable<AngularFireAction<firebase.database.DataSnapshot>[]>;
 
@@ -50,19 +50,18 @@ export class PutovanjeService {
   getStateLift(): AngularFireList<LiftState>{
     return this.stateRef;
   }
-  getAllTravels(): AngularFireList<Voznja> {   
+  getAllTravels(): AngularFireList<Travel> {   
     
     return this.putoRef;
   }
 
   getListPutovanjaQuery(key:string){
-    console.log("Ispis5",key);
     this.size$.next(key);  
   
     return this.items$;
   }
  
-  create(travel: Voznja): any {
+  create(travel: Travel): any {
     return this.putoRef.push(travel);
   }
 
@@ -70,12 +69,10 @@ export class PutovanjeService {
     return this.putoRef.update(key, value);
   }
   updateMjeri(key: string, value: any): Promise<void> {
-    return this.mjeriRef.update(key, value);
+    return this.mjeriRef.update(key,{state:value} );
   }
   getMjeriQ(key:string){
-    console.log("Ispis5",key);
-    this.sizemjeri$.next(key);   
-  
+    this.sizemjeri$.next(key); 
     return this.itemsmjeri$;
   }
 

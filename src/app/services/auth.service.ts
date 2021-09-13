@@ -10,19 +10,18 @@ import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
   providedIn: 'root'
 })
 export class AuthService {
-  userData: any; // Save logged in user data
+  userData: any; 
   private dbPath = '/Users';
   liftsRef!: AngularFireList<User>;
   constructor( 
-    public afs: AngularFirestore,   // Inject Firestore service
-    public afAuth: AngularFireAuth, // Inject Firebase auth service
+    public afs: AngularFirestore,   
+    public afAuth: AngularFireAuth, 
     public router: Router,  
-    public ngZone: NgZone, // NgZone service to remove outside scope warning) { }
+    public ngZone: NgZone, 
     private db: AngularFireDatabase
     )
     {
-/* Saving user data in localstorage when 
-    logged in and setting up null when logged out */
+
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.userData = user;
@@ -37,7 +36,6 @@ export class AuthService {
 
   }
 
-  // Sign in with email/password
   SignIn(email:any, password:any) {
     return this.afAuth.signInWithEmailAndPassword(email, password)
       .then((result:any) => {
@@ -50,12 +48,10 @@ export class AuthService {
       })
   }
 
-  // Sign up with email/password
   SignUp(email:any, password:any) {
     return this.afAuth.createUserWithEmailAndPassword(email, password)
       .then((result:any) => {
-        /* Call the SendVerificaitonMail() function when new user sign 
-        up and returns promise */
+
         this.SendVerificationMail();
         this.SetUserData(result.user);
       }).catch((error:any) => {
@@ -65,14 +61,12 @@ export class AuthService {
 
 
 
-   // Email verification when new user register
    SendVerificationMail() {
     return this.afAuth.currentUser.then(u => u!.sendEmailVerification())
     .then(() => {
       this.router.navigate(['verify-email']);
     })
   }
-  // Reset Forggot password
   ForgotPassword(passwordResetEmail:any) {
     return this.afAuth.sendPasswordResetEmail(passwordResetEmail)
     .then(() => {
@@ -83,15 +77,11 @@ export class AuthService {
   }
   
 
-  // Returns true when user is looged in and email is verified
   get isLoggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem('user')!);
-    //console.log("Ispis2",(user !== null && user.emailVerified !== false) ? true : false);
-
     return (user !== null && user.emailVerified !== false) ? true : false;
   }
 
-  // Auth logic to run auth providers
   AuthLogin(provider:any) {
     return this.afAuth.signInWithPopup(provider)
     .then((result:any) => {
@@ -104,10 +94,7 @@ export class AuthService {
     })
   }
 
-  /* Setting up user data when sign in with username/password, 
-  sign up with username/password and sign in with social auth  
-  provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  //todo: provjera da ako postoji vec ne sprema se
+  
   SetUserData(user:any) {
     
     const userData: User = {

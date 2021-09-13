@@ -209,8 +209,8 @@
         <mat-form-field >
           <mat-label>Dan</mat-label>
           <mat-select [(ngModel)]="selectedValue" name="danutj" (selectionChange)="changeDay($event)">
-            <mat-option *ngFor="let day of days" [value]="day">
-              {{day}}
+            <mat-option *ngFor="let day of days" [value]="day.value">
+              {{day.viewValue}}
             </mat-option>
           </mat-select>
         </mat-form-field>
