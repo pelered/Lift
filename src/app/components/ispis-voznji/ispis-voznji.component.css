@@ -1,0 +1,23 @@
+.example-form-field1 {
+    width: 200px;
+    padding-right: 20px;
+  }
+  .topcorner{
+    position:absolute;
+    top:10px;
+    right:10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+   }
+   .div-buttons{
+     padding-top: 10px;
+   }
+   .mat-tab-group {
+    margin-bottom: 48px;
+  }
+  .div-graphs{
+    display: block; 
+    width: 80%;
+    margin: auto;
+  }
+  

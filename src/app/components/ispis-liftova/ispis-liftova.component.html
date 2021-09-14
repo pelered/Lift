@@ -1,0 +1,91 @@
+<div class="title-group">
+    <h1 class="mat-h1" >Popis liftova</h1>
+  </div>
+  <div>
+    <button mat-stroked-button *ngIf="zgrada!=undefined">
+      <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+        business
+        </span></mat-icon>  {{zgrada.ime}}</button>
+       
+        <button mat-stroked-button *ngIf="podzg!=undefined">
+          <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+            business
+            </span></mat-icon> {{podzg.ime}} </button>
+  </div>
+  
+  <div>
+    <mat-divider fxFlex="1 0"></mat-divider>
+
+  </div>
+  <mat-form-field appearance="standard">
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Lift1" #input>
+  </mat-form-field>
+    <div class="container"  *ngIf="LiftData.length > 0" >
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataSource" >          
+
+            <ng-container matColumnDef="ime">
+              <th mat-header-cell *matHeaderCellDef> Naziv</th>
+              <td mat-cell class="example-form-field" *matCellDef="let element; let i = index;"> 
+                <mat-form-field style="text-align:center" appearance="fill" *ngIf="is_edit[i]==true;else content">
+                  <mat-label>Naziv</mat-label>
+                  <input matInput type="text" [(ngModel)]="value"
+                  (input)="check(value,element.key)">
+                  <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-form-field>
+                <ng-template #content>{{element.ime}}
+               </ng-template> 
+                 </td>
+            </ng-container>  
+            
+            <ng-container matColumnDef="najnizi kat" >
+              <th mat-header-cell *matHeaderCellDef> Najniži kat </th>
+              <td mat-cell *matCellDef="let element">
+             {{element.n_k}}
+              
+              </td>
+            </ng-container>       
+            <ng-container matColumnDef="najvisi kat" >
+                <th mat-header-cell *matHeaderCellDef> Najvisi kat </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.v_k}}
+
+                
+                </td>
+              </ng-container>       
+              <ng-container matColumnDef="spojen">
+                <th mat-header-cell *matHeaderCellDef> Spojeno </th>
+                <td mat-cell *matCellDef="let element">
+                  {{element.is_connected}}
+                
+                </td>
+              </ng-container>
+      
+               
+            <ng-container matColumnDef="action" >
+              <th mat-header-cell *matHeaderCellDef class="header-align-right">  </th>
+              <td mat-cell *matCellDef="let element; let i = index;" class="content-align-right">
+                <button mat-raised-button color="primary" class="push-right"
+                [routerLink]="['/ispis-voznji/',element.key]" [state]="{ data:element,data1:zgrada,data2:podzg}"
+                  >Open</button>
+              
+                <button mat-raised-button color="red" (click)=editLift(element.key,element.ime,i) 
+                class="push-right" *ngIf="is_edit[i]==false"
+                [disabled]=" edit" >Edit</button>
+                <button mat-raised-button color="red"  class="push-right" 
+                (click)=saveLift(element.key,element.ime,i) *ngIf="is_edit[i]==true"
+                [disabled]="isti_naziv || value ===''">Save</button>
+                <button mat-raised-button color="warn" (click)="Dialog(element.key)" >Delete</button>
+              </td>
+            </ng-container>
+      
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+      
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>

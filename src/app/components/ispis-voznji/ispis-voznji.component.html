@@ -1,0 +1,257 @@
+    
+    
+    
+    <h1 class="mat-h1"  >Popis vožnji</h1>    
+
+  <div class="div-buttons">
+    <button mat-stroked-button *ngIf="zgrada!=undefined">
+      <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon">
+        <span class="material-icons-outlined">
+        business
+        </span></mat-icon> {{zgrada.ime}} </button>    
+          
+        <button mat-stroked-button *ngIf="podzg!=undefined">
+          <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+            business
+            </span></mat-icon> {{podzg.ime}} </button>          
+              
+              
+        <button mat-stroked-button *ngIf="lift!=undefined">          
+          <mat-icon aria-hidden="false" class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+            elevator
+            </span></mat-icon>  {{lift.ime}}</button>
+  </div>
+  
+  <div >
+    <mat-divider  fxFlex="1 0"></mat-divider>
+  </div >
+<div>
+  <mat-tab-group animationDuration="0ms">
+    <mat-tab label="Tablica">
+      <div [hidden]="!(TravelData.length > 0)">
+        <mat-form-field appearance="standard" >
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Lift" #input>
+        </mat-form-field>
+        </div>
+        <div  [hidden]="!(TravelData.length > 0)" >
+        <form [formGroup]="filterForm" >
+            <mat-form-field class="example-form-field1"  >
+              <input matInput       
+      
+                [matDatepicker]="fromDate" 
+                placeholder="From Date" 
+                formControlName="fromDate">
+                
+              <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+              <mat-datepicker #fromDate></mat-datepicker>
+            </mat-form-field>
+           
+            <mat-form-field class="example-form-field1">
+              <input matInput  
+             
+                [matDatepicker]="toDate" 
+                placeholder="To Date" 
+                formControlName="toDate">
+               
+              <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+              <mat-datepicker #toDate></mat-datepicker>
+      
+            </mat-form-field>
+            <button  matSuffix mat-icon-button aria-label="Clear" (click)="clearFromDate()">
+              <mat-icon matDatepickerToggleIcon >close</mat-icon>
+            </button>
+           <button mat-button color="primary" (click)="applyFilterDate()">Pretraži</button>
+        </form>
+        </div>
+        <div class="topcorner" *ngIf="lift_state && prikazi" >
+          <div style="float: left;">
+            <p><b>Stanje lifta:</b> {{lift_state.state}} </p>
+            <p><b>Trenutni kat: </b>{{lift_state.t_k}}</p>
+          </div>
+          <div style="float: right; padding-left: 10px;"> 
+            <p><b>Broj ljudi:</b> {{lift_state.c_p}}</p>
+            <p><b>Postotak baterije:</b> {{lift_state.b_p}}</p>
+          </div>
+          <div >
+            <button mat-stroked-button (click)="promjeni()" *ngIf="prikazi"  > {{stanje}}</button>
+
+          </div>
+          
+         
+        </div>
+        <div class="container" [hidden]="!(TravelData.length > 0)"  >
+          <div style="float:right;">
+            <button mat-raised-button (click)="exporter.exportTable('xlsx', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
+            <button mat-raised-button (click)="exporter.exportTable('csv')">Csv</button>
+            <button mat-raised-button (click)="exporter.exportTable('json')">Json</button>
+            <button mat-raised-button (click)="exporter.exportTable('txt')">Txt</button>
+          </div>
+              <div class="mat-elevation-z8">
+                <table mat-table  matTableExporter #exporter="matTableExporter" [dataSource]="dataSource" matSort >
+                      
+                  
+                  <ng-container matColumnDef="n_k" >
+                    <th mat-header-cell *matHeaderCellDef > Najniži kat </th>
+                    <td mat-cell *matCellDef="let element">
+                   {{element.n_k}}
+                    
+                    </td>
+                  </ng-container>       
+                  <ng-container matColumnDef="v_k" >
+                      <th mat-header-cell *matHeaderCellDef > Najvisi kat </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.v_k}}                
+                      </td>
+                    </ng-container>    
+                    <ng-container matColumnDef="p_k" >
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Početni kat </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.p_k}}                
+                      </td>
+                    </ng-container>     
+                    <ng-container matColumnDef="z_k" >
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Završni kat </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.z_k}}                
+                      </td>
+                    </ng-container>   
+                    <ng-container matColumnDef="start_time" >
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Polazak </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.start_time}}               
+                      </td>
+                    </ng-container>  
+                    <ng-container matColumnDef="end_time" >
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Dolazak </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.end_time}}                
+                      </td>
+                    </ng-container> 
+                    <ng-container matColumnDef="count_p" >
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Broj ljudi </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.count_p}}                
+                      </td>
+                    </ng-container>      
+                     
+                  
+            
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                   <!-- Row shown when there is no matching data. -->
+                  <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+          </tr>
+                </table>
+            
+                <mat-paginator [pageSizeOptions]="[5, 10, 20,100]" showFirstLastButtons></mat-paginator>
+              </div>
+        </div>
+    </mat-tab>
+    <mat-tab label="Histogram-broj vožnji dnevno">
+
+      <div class="div-graphs" [hidden]="!(TravelData.length > 0)">
+        <canvas id="voznja"
+        style="background-color: white"
+         baseChart 
+          [datasets]="barChartData"
+          [labels]="barChartLabels"
+          [options]="barChartOptions"
+          [plugins]="barChartPlugins"
+          [legend]="barChartLegend"
+          [chartType]="barChartType"
+          [colors]="colors">
+        </canvas>
+      </div>
+  
+      <button  class ="topcorner" mat-stroked-button  (click)="Skini('voznja')" ><mat-icon aria-hidden="false"
+         class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+        file_download
+        </span></mat-icon></button>
+    </mat-tab>
+    <mat-tab label="Histogram-broj osoba dnevno">
+      <div  class="div-graphs"   [hidden]="!(TravelData.length > 0)">
+        <canvas id="ljudi" baseChart 
+          [datasets]="barChartData1"
+          [labels]="barChartLabels1"
+          [options]="barChartOptions1"
+          [plugins]="barChartPlugins1"
+          [legend]="barChartLegend1"
+          [chartType]="barChartType1"
+          [colors]="colors">
+        </canvas>
+      </div>
+      <button  class ="topcorner" mat-stroked-button  (click)="Skini('ljudi')" ><mat-icon aria-hidden="false"
+        class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+       file_download
+       </span></mat-icon></button>
+    </mat-tab>
+    <mat-tab label="Histogram-posjećenost katova">
+      <div class="div-graphs"   [hidden]="!(TravelData.length > 0)">
+        <canvas id="kat" baseChart 
+          [datasets]="barChartData2"
+          [labels]="barChartLabels2"
+          [options]="barChartOptions2"
+          [plugins]="barChartPlugins2"
+          [legend]="barChartLegend2"
+          [chartType]="barChartType2"
+          [colors]="colors">
+        </canvas>
+      </div>
+      <button  class ="topcorner" mat-stroked-button  (click)="Skini('kat')" ><mat-icon aria-hidden="false"
+        class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+       file_download
+       </span></mat-icon></button>
+    </mat-tab>
+    <mat-tab label="Histogram-promet tijekom dana">
+      <div style="padding-top: 10px;">
+        <mat-form-field >
+          <mat-label>Dan</mat-label>
+          <mat-select [(ngModel)]="selectedValue" name="danutj" (selectionChange)="changeDay($event)">
+            <mat-option *ngFor="let day of days" [value]="day.value">
+              {{day.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="div-graphs"   [hidden]="!(TravelData.length > 0)">
+        <canvas id="dan" baseChart 
+          [datasets]="barChartData3"
+          [labels]="barChartLabels3"
+          [options]="barChartOptions3"
+          [plugins]="barChartPlugins3"
+          [legend]="barChartLegend3"
+          [chartType]="barChartType3"
+          [colors]="colors">
+        </canvas>
+      </div>
+      <button  class ="topcorner" mat-stroked-button  (click)="Skini('dan')" ><mat-icon aria-hidden="false"
+        class="mat-icon-padding" aria-label="Example home icon"><span class="material-icons-outlined">
+       file_download
+       </span></mat-icon></button>
+    </mat-tab>
+  </mat-tab-group>
+
+</div>
+<div *ngIf="isLoading" 
+   style="display: flex; justify-content: center; align-items: center; background: white;">
+  <mat-progress-spinner 
+    color="primary" 
+    mode="indeterminate">
+  </mat-progress-spinner>
+</div>
+ <div *ngIf=" !isLoading && this.TravelData.length==0">
+   <table>
+    <tr class="mat-row" >
+      <td class="mat-cell" colspan="4">Nema podataka</td>
+    </tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+   </table>
+  
+ </div>
+ 
+ 
+
+  

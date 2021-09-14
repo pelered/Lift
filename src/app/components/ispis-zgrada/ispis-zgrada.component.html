@@ -1,0 +1,130 @@
+<div class="title-group">
+    <h1 class="mat-h1" >Popis zgrada</h1>
+  </div>
+  <div>
+    <mat-divider fxFlex="1 0"></mat-divider>
+
+  </div>
+  <mat-form-field appearance="standard">
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Zgrada" #input>
+  </mat-form-field>
+
+    <!-- Books list Angular material data table -->
+    <div class="container"  [hidden]="LiftData.length == 0" >
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataSource"   >
+        
+
+            <ng-container matColumnDef="ime">
+              <th mat-header-cell *matHeaderCellDef  > Naziv</th>
+              <td mat-cell *matCellDef="let element;let i = index;"> 
+
+                <mat-form-field class="example-form-field" appearance="fill" *ngIf="is_edit[i]==true;else content">
+                  <mat-label>Naziv</mat-label>
+                  <input matInput type="text" [formControl]="zgradaFormControl"  [(ngModel)]="value"
+                  (input)="checkZg(value,element.key)">
+                  <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                    <mat-icon>close</mat-icon>
+                  </button>                
+                  <mat-error *ngIf="zgradaFormControl.hasError('required')">
+                    Molim Vas unesite naziv zgrade
+                  </mat-error>
+                  
+                </mat-form-field>
+               
+               
+                <ng-template #content>{{element.ime}}
+
+               </ng-template> 
+              </td>
+            </ng-container>  
+            
+            <ng-container matColumnDef="podzgrade" >
+              <th mat-header-cell *matHeaderCellDef> Podzgrade </th>
+
+              <td mat-cell *matCellDef="let element; let i = index;">
+                <mat-form-field class="example-form-field" appearance="fill" 
+                *ngIf="is_edit[i]==true && getSpecificPodZg(element.key).length;else contentpod">
+                  <mat-label>Naziv</mat-label>
+                  <input matInput type="text" [formControl]="podzgradaFormControl"  [(ngModel)]="value2"
+                   (input)="check(value2,getSpecificPodZg(element.key))">
+                  <button *ngIf="value2" matSuffix mat-icon-button aria-label="Clear" (click)="value2=''">
+                    <mat-icon>close</mat-icon>
+                  </button>                
+                  <mat-error *ngIf="podzgradaFormControl.hasError('required')">
+                    Molim Vas unesite naziv podzgrade
+                  </mat-error>                  
+                </mat-form-field>
+                <ng-template #contentpod>
+              <mat-form-field  *ngIf="getSpecificPodZg(element.key).length" >
+                <mat-select   [(ngModel)]="is_selected[i]" disableOptionCentering class="mySelectClass">
+                  <mat-option *ngFor="let podZgrada of getSpecificPodZg(element.key); let i = index"  [selected]="i===0" [value]="podZgrada.key"  >
+                    {{podZgrada.ime}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </ng-template>
+              
+              </td>
+            </ng-container>       
+
+               
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef class="header-align-right">  </th>
+              <td mat-cell *matCellDef="let element; let i = index;" class="content-align-right">
+                <button mat-raised-button color="primary" class="push-right"
+                [disabled]="is_selected[i]==undefined"
+                
+                *ngIf="getSpecificPodZg(element.key).length"
+                [routerLink]="['/ispis-liftova/',is_selected[i]]"
+                 [state]="{ data:element,data1:is_selected[i],data2:PodZgrada}"
+                
+                  >Open</button>
+                  <button mat-raised-button color="primary" class="push-right"
+                *ngIf="!getSpecificPodZg(element.key).length"
+                [routerLink]="['/ispis-liftova/',element.key]" [state]="{ data: element}"
+                  >Open</button>
+                  <!--todo dodaj da se može maknuti cijela zgrada,uz uvjet da mjerenje/a prestane/u
+                  te da se ne izbriši odmah iz baze nego nakon par dana ali mjerejrenj je pauzirano
+
+                 [routerLink]="['/ispis-liftova/',element.key]"
+
+              -->
+               
+              <button mat-raised-button 
+               (click)=editZgrada(element.key,element.ime,i,is_selected[i]) class="push-right" 
+                [disabled]=" is_selected[i]==undefined || edit"  
+                *ngIf="is_edit[i]==false && getSpecificPodZg(element.key).length">Edit</button>
+              <button mat-raised-button  
+              (click)=editZgrada(element.key,element.ime,i,is_selected[i]) 
+              class="push-right"  *ngIf="is_edit[i]==false && !getSpecificPodZg(element.key).length" 
+              [disabled]="edit">Edit</button>
+             
+
+              <button mat-raised-button   class="push-right" 
+              [disabled]="value ==='' || value2 ===''|| isti_naziv "
+              (click)=saveZgrada(element.key,element.ime,i,is_selected[i]) 
+              *ngIf="is_edit[i]==true">Save</button>
+             
+                <button mat-raised-button  *ngIf="getSpecificPodZg(element.key).length"
+                 [disabled]="is_selected[i]==undefined" color="warn"  (click)="Dialog(element.key,is_selected[i])"
+                 >Delete</button>
+                <button mat-raised-button color="warn" *ngIf="!getSpecificPodZg(element.key).length" 
+                (click)="Dialog(element.key,'false')"
+                
+                >Delete</button>
+              </td>
+            </ng-container>
+                
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+      
+          <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" showFirstLastButtons
+          (page)="pageEvent = $event; onPaginateChange($event)"></mat-paginator>
+
+        </div>
+      </div>
+      
+ 

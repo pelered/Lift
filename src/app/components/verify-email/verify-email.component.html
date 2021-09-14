@@ -1,0 +1,29 @@
+  
+        <div style="display: flex;
+        justify-content: center;">
+          <h3>Hvala na regitraciji</h3>
+        </div>
+        
+  
+        <div *ngIf="authService.userData as user" style="display: flex;
+        justify-content: center;">
+          <p class="text-center">Email za verifikaciju je poslan na <strong>{{user.email}}</strong>.</p>
+          <p class="text-center">Molim Vas provjerite Vas email i kliknite na link kako bi verificirali Vaš email.
+            </p>
+        </div>
+        
+        <!-- Calling SendVerificationMail() method using authService Api -->
+        <div  style="display: flex;
+        justify-content: center;">
+          <button type="button" class="btn btnPrimary" (click)="authService.SendVerificationMail()">
+            <i class="fas fa-redo-alt"></i>
+            Ponovo pošalji
+          </button>
+        </div>
+  
+  
+      <div class="redirectToLogin" style="display: flex;
+      justify-content: center;">
+        <span>Natrag na?<span class="redirect" routerLink="/sign-in"> Log in</span></span>
+      </div>
+  
