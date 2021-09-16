@@ -640,12 +640,12 @@ clearFromDate()
 promjeni(){
   if(this.stanje=="Zaustavi"){
     this.mjeri_state.state=false;
-    this.travel_service.updateMjeri(this.id,this.mjeri_state)
+    this.travel_service.updateMjeri(this.id,this.mjeri_state.state)
     
     
   }else if(this.stanje=="Pokreni"){
     this.mjeri_state.state=true;
-    this.travel_service.updateMjeri(this.id,this.mjeri_state)
+    this.travel_service.updateMjeri(this.id,this.mjeri_state.state)
 
 
   }
